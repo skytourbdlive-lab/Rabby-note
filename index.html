@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Premium Slot Tracker with Mayra Voice AI</title>
+    <title>Ultimate Premium Slot Tracker</title>
     <style>
         :root {
             --bg-color: #0b0f19;
@@ -13,7 +13,6 @@
             --success: #22c55e;
             --danger: #ef4444;
             --border: #24324d;
-            --accent: #a855f7;
         }
 
         body {
@@ -29,105 +28,10 @@
             margin: 0 auto;
         }
 
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .lang-switch button {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            color: #fff;
-            padding: 6px 15px;
-            cursor: pointer;
-            border-radius: 20px;
-            font-weight: bold;
-        }
-
-        .lang-switch button.active {
-            background: var(--primary);
-            border-color: var(--primary);
-        }
-
         h1 {
             text-align: center;
             margin: 10px 0 25px 0;
             font-weight: 700;
-        }
-
-        /* Mayra AI Panel */
-        .ai-panel {
-            background: rgba(168, 85, 247, 0.1);
-            border: 1px solid rgba(168, 85, 247, 0.3);
-            border-radius: 14px;
-            padding: 20px;
-            margin-bottom: 25px;
-            text-align: center;
-            position: relative;
-        }
-
-        .ai-header {
-            font-weight: bold;
-            color: #c084fc;
-            margin-bottom: 10px;
-            font-size: 18px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .status-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #ef4444;
-            display: inline-block;
-        }
-
-        .status-dot.active {
-            background: #22c55e;
-            box-shadow: 0 0 10px #22c55e;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.2); opacity: 0.5; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .ai-instructions {
-            font-size: 14px;
-            color: #94a3b8;
-            margin-bottom: 15px;
-        }
-
-        .voice-btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 30px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .voice-btn:hover {
-            transform: scale(1.05);
-            background: #9333ea;
-        }
-
-        .ai-response {
-            margin-top: 12px;
-            font-size: 14px;
-            color: #a7f3d0;
-            font-weight: 500;
-            min-height: 20px;
         }
 
         /* Slots Grid */
@@ -318,98 +222,31 @@
 <body>
 
 <div class="container">
-    <div class="top-bar">
-        <div class="lang-switch">
-            <button id="btn-bn" class="active" onclick="switchLanguage('bn')">বাংলা</button>
-            <button id="btn-en" onclick="switchLanguage('en')">English</button>
-        </div>
-    </div>
-
-    <h1 id="main-title">Premium Slot Tracker</h1>
-
-    <div class="ai-panel">
-        <div class="ai-header">
-            <span class="status-dot" id="mayra-status"></span>
-            <span>🎙️ Mayra Voice Assistant</span>
-        </div>
-        <div class="ai-instructions" id="ai-inst">
-            ওয়েবসাইটে ঢোকার পর মায়রাকে সচল করতে নিচের বাটনে একবার চাপুন। তারপর বলুন: "হেই মায়রা, স্লট ২ এর নাম রাব্বি করে দাও।"
-        </div>
-        <button class="voice-btn" id="start-voice-btn" onclick="initMayra()">Wake Up Mayra</button>
-        <div class="ai-response" id="ai-output">Mayra is sleeping...</div>
-    </div>
-
+    <h1>Premium Slot Tracker</h1>
     <div class="slots-grid" id="slots-container"></div>
 </div>
 
 <script>
-    let currentLang = 'bn';
-    let recognition;
-
-    const langData = {
-        bn: {
-            title: "প্রিমিয়াম স্লট ট্র্যাকার",
-            userName: "ইউজার নেম",
-            lbl1: "অ্যাডভান্স পেমেন্ট",
-            lbl2: "বাকি টাকা",
-            lbl3: "দেওয়া ভিউ",
-            lbl4: "টার্গেট ভিউ",
-            edit: "এডিট",
-            save: "সেভ",
-            book: "বুক",
-            release: "রিলিজ",
-            booked: "বুকড",
-            available: "ফ্রি"
-        },
-        en: {
-            title: "Premium Slot Tracker",
-            userName: "User Name",
-            lbl1: "Advance Paid",
-            lbl2: "Due Amount",
-            lbl3: "Given Views",
-            lbl4: "Target Views",
-            edit: "Edit",
-            save: "Save",
-            book: "Book",
-            release: "Release",
-            booked: "Booked",
-            available: "Available"
-        }
-    };
-
-    // Load Data - Added 'tiktok' property for new link feature
+    // ডেটা লোড এবং প্রস্তুত করা
     let slotsData = JSON.parse(localStorage.getItem('megaSlotsData'));
     if (!slotsData || slotsData.length === 0) {
         slotsData = [];
         for (let i = 1; i <= 20; i++) {
             slotsData.push({
-                id: i,
-                name: '',
-                status: 'Available',
-                banner: '',
-                avatar: '',
-                tiktok: '',
-                label1: langData.bn.lbl1, val1: '',
-                label2: langData.bn.lbl2, val2: '',
-                label3: langData.bn.lbl3, val3: '',
-                label4: langData.bn.lbl4, val4: ''
+                id: i, name: '', status: 'Available', banner: '', avatar: '', tiktok: '',
+                label1: "অ্যাডভান্স পেমেন্ট", val1: '',
+                label2: "বাকি টাকা", val2: '',
+                label3: "দেওয়া ভিউ", val3: '',
+                label4: "টার্গেট ভিউ", val4: ''
             });
         }
         localStorage.setItem('megaSlotsData', JSON.stringify(slotsData));
     }
 
-    // Ensure older data has the tiktok field
+    // পুরানো ডেটাতে লিংক অপশন না থাকলে যুক্ত করা
     slotsData.forEach(slot => {
         if (slot.tiktok === undefined) slot.tiktok = '';
     });
-
-    function switchLanguage(lang) {
-        currentLang = lang;
-        document.getElementById('btn-bn').classList.toggle('active', lang === 'bn');
-        document.getElementById('btn-en').classList.toggle('active', lang === 'en');
-        document.getElementById('main-title').innerText = langData[lang].title;
-        renderSlots();
-    }
 
     function renderSlots() {
         const container = document.getElementById('slots-container');
@@ -417,10 +254,9 @@
 
         slotsData.forEach(slot => {
             const isBooked = slot.status === 'Booked';
-            const statusText = isBooked ? langData[currentLang].booked : langData[currentLang].available;
-            const toggleText = isBooked ? langData[currentLang].release : langData[currentLang].book;
+            const statusText = isBooked ? 'বুকড' : 'ফ্রি';
+            const toggleText = isBooked ? 'রিলিজ' : 'বুক';
             
-            // Format link URL properly
             const formattedLink = slot.tiktok.startsWith('http') ? slot.tiktok : (slot.tiktok ? 'https://' + slot.tiktok : '');
 
             const card = document.createElement('div');
@@ -438,7 +274,6 @@
                 </div>
 
                 <div class="slot-content">
-                    
                     <div class="slot-header">
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <span class="slot-number">Slot ${slot.id}</span>
@@ -453,7 +288,7 @@
                     </div>
                     
                     <div class="input-group full-width">
-                        <input type="text" class="label-edit" value="${langData[currentLang].userName}" disabled>
+                        <input type="text" class="label-edit" value="ইউজার নেম" disabled>
                         <input type="text" id="name-${slot.id}" class="val-input" value="${slot.name}" placeholder="..." disabled>
                     </div>
 
@@ -478,8 +313,8 @@
                 </div>
 
                 <div class="actions">
-                    <button class="action-btn btn-edit" id="edit-btn-${slot.id}" onclick="enableEdit(${slot.id})">${langData[currentLang].edit}</button>
-                    <button class="action-btn btn-save" id="save-btn-${slot.id}" onclick="saveSlot(${slot.id})">${langData[currentLang].save}</button>
+                    <button class="action-btn btn-edit" id="edit-btn-${slot.id}" onclick="enableEdit(${slot.id})">এডিট</button>
+                    <button class="action-btn btn-save" id="save-btn-${slot.id}" onclick="saveSlot(${slot.id})">সেভ</button>
                     <button class="action-btn btn-toggle" onclick="toggleStatus(${slot.id})">${toggleText}</button>
                 </div>
             `;
@@ -487,31 +322,70 @@
         });
     }
 
-    // FIXED IMAGE UPLOAD SYSTEM
+    // ইমেজ আপলোডের জন্য ট্রিগার
     function triggerUpload(type, id) {
         document.getElementById(`file-${type}-${id}`).click();
     }
 
+    // ছবি ছোট করার ফাংশন (কম্প্রেসার) - যাতে স্টোরেজ ফুল না হয়
+    function resizeImage(base64Str) {
+        return new Promise((resolve) => {
+            let img = new Image();
+            img.src = base64Str;
+            img.onload = () => {
+                let canvas = document.createElement('canvas');
+                let MAX_WIDTH = 300; // ছবি রিসাইজ করে ছোট করা হবে
+                let MAX_HEIGHT = 300;
+                let width = img.width;
+                let height = img.height;
+
+                if (width > height) {
+                    if (width > MAX_WIDTH) {
+                        height *= MAX_WIDTH / width;
+                        width = MAX_WIDTH;
+                    }
+                } else {
+                    if (height > MAX_HEIGHT) {
+                        width *= MAX_HEIGHT / height;
+                        height = MAX_HEIGHT;
+                    }
+                }
+                canvas.width = width;
+                canvas.height = height;
+                let ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                resolve(canvas.toDataURL('image/jpeg', 0.6)); // সাইজ কমানো হলো
+            };
+        });
+    }
+
+    // ছবি আপলোড হ্যান্ডলার
     function handleUpload(input, type, id) {
         if (input.files && input.files[0]) {
             const reader = new FileReader();
-            reader.onload = function(e) {
-                const parsedId = parseInt(id);
-                const idx = slotsData.findIndex(s => s.id === parsedId);
-                
-                if (idx > -1) {
-                    if (type === 'banner') slotsData[idx].banner = e.target.result;
-                    if (type === 'avatar') slotsData[idx].avatar = e.target.result;
+            reader.onload = async function(e) {
+                try {
+                    // ছবি কম্প্রেস করে সেভ করা হচ্ছে
+                    const compressedImage = await resizeImage(e.target.result);
+                    const parsedId = parseInt(id);
+                    const idx = slotsData.findIndex(s => s.id === parsedId);
                     
-                    localStorage.setItem('megaSlotsData', JSON.stringify(slotsData));
-                    renderSlots();
+                    if (idx > -1) {
+                        if (type === 'banner') slotsData[idx].banner = compressedImage;
+                        if (type === 'avatar') slotsData[idx].avatar = compressedImage;
+                        
+                        localStorage.setItem('megaSlotsData', JSON.stringify(slotsData));
+                        renderSlots();
+                    }
+                } catch (error) {
+                    alert("ছবি সেভ করতে সমস্যা হচ্ছে! দয়া করে ছোট সাইজের ছবি দিন।");
                 }
             };
             reader.readAsDataURL(input.files[0]);
         }
     }
 
-    // SAVE LINK FUNCTION
+    // লিংক সেভ করার ফাংশন
     function saveLink(id) {
         const parsedId = parseInt(id);
         const idx = slotsData.findIndex(s => s.id === parsedId);
@@ -566,7 +440,7 @@
                 slotsData[idx].val1 = ''; slotsData[idx].val2 = '';
                 slotsData[idx].val3 = ''; slotsData[idx].val4 = '';
                 slotsData[idx].banner = ''; slotsData[idx].avatar = '';
-                slotsData[idx].tiktok = ''; // Clear link when slot is freed
+                slotsData[idx].tiktok = ''; // স্লট ফ্রি করলে লিংকও মুছে যাবে
             } else {
                 slotsData[idx].status = 'Booked';
             }
@@ -575,121 +449,8 @@
         renderSlots();
     }
 
-    // ================= Mayra Voice System =================
-    function initMayra() {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SpeechRecognition) {
-            alert("দুঃখিত ভাই, আপনার ব্রাউজারে ভয়েস সিস্টেম সাপোর্ট করছে না। Chrome ব্যবহার করুন।");
-            return;
-        }
-
-        recognition = new SpeechRecognition();
-        recognition.continuous = true;
-        recognition.interimResults = false;
-        recognition.lang = 'bn-BD';
-
-        recognition.onstart = () => {
-            document.getElementById('mayra-status').className = 'status-dot active';
-            document.getElementById('ai-output').innerText = "🔊 মায়রা এখন জেগে আছে। বলুন 'হেই মায়রা'...";
-            document.getElementById('start-voice-btn').style.display = 'none';
-        };
-
-        recognition.onresult = (event) => {
-            const currentResultIndex = event.resultIndex;
-            const text = event.results[currentResultIndex][0].transcript.toLowerCase().trim();
-            console.log("শুনেছি:", text);
-
-            if (text.includes("মায়রা") || text.includes("mayra") || text.includes("মাইরা")) {
-                document.getElementById('ai-output').innerText = "🎙️ মায়রা আপনার কমান্ড শুনছে...";
-                executeVoiceCommand(text);
-            }
-        };
-
-        recognition.onerror = (err) => {
-            console.error("ভয়েস ইরর:", err);
-            document.getElementById('ai-output').innerText = "❌ আবার চেষ্টা করুন...";
-        };
-
-        recognition.onend = () => {
-            recognition.start();
-        };
-
-        recognition.start();
-    }
-
-    function executeVoiceCommand(cmd) {
-        const output = document.getElementById('ai-output');
-        
-        const slotMatch = cmd.match(/স্লট\s*(\d+)/) || cmd.match(/slot\s*(\d+)/);
-        if (!slotMatch) {
-            output.innerText = "❌ স্লট নম্বরটি বুঝতে পারিনি। (যেমন: স্লট ৫ বলুন)";
-            return;
-        }
-
-        const slotId = parseInt(slotMatch[1]);
-        const idx = slotsData.findIndex(s => s.id === slotId);
-
-        if (idx === -1) {
-            output.innerText = "❌ এই নম্বরের কোনো স্লট নেই।";
-            return;
-        }
-
-        if (cmd.includes("নাম") || cmd.includes("name")) {
-            let cleanName = cmd.replace(/.*(?:নাম|name)\s*/, '')
-                               .replace(/(?:করে\s*দাও|করো|দাও|হবে)/g, '')
-                               .replace(/.*(?:মাইরা|মায়রা)\s*/, '')
-                               .trim();
-            
-            if (cleanName) {
-                slotsData[idx].name = cleanName;
-                slotsData[idx].status = 'Booked';
-                localStorage.setItem('megaSlotsData', JSON.stringify(slotsData));
-                renderSlots();
-                output.innerText = `✅ সফল! স্লট ${slotId} এর নাম '${cleanName}' করা হয়েছে।`;
-                return;
-            }
-        }
-
-        let numMatch = cmd.match(/(\d+)/g);
-        let valueToSet = null;
-        
-        if (numMatch) {
-            for (let num of numMatch) {
-                if (parseInt(num) !== slotId) {
-                    valueToSet = num;
-                    break;
-                }
-            }
-        }
-
-        if (valueToSet) {
-            let target = "";
-            if (cmd.includes("অ্যাডভান্স") || cmd.includes("advance")) {
-                slotsData[idx].val1 = valueToSet;
-                target = "অ্যাডভান্স পেমেন্ট";
-            } else if (cmd.includes("বাকি") || cmd.includes("due")) {
-                slotsData[idx].val2 = valueToSet;
-                target = "বাকি টাকা";
-            } else if (cmd.includes("দেওয়া") || cmd.includes("given")) {
-                slotsData[idx].val3 = valueToSet;
-                target = "দেওয়া ভিউ";
-            } else if (cmd.includes("টার্গেট") || cmd.includes("target") || cmd.includes("ভিউ") || cmd.includes("view")) {
-                slotsData[idx].val4 = valueToSet;
-                target = "টার্গেট ভিউ";
-            }
-
-            if (target) {
-                localStorage.setItem('megaSlotsData', JSON.stringify(slotsData));
-                renderSlots();
-                output.innerText = `✅ সফল! স্লট ${slotId} এর ${target} '${valueToSet}' করা হয়েছে।`;
-                return;
-            }
-        }
-
-        output.innerText = "❌ কমান্ডটি ঠিক বুঝতে পারিনি। আবার বলুন।";
-    }
-
-    switchLanguage('bn');
+    // পেজ লোড হলে স্লটগুলো রেন্ডার হবে
+    renderSlots();
 </script>
 
 </body>
