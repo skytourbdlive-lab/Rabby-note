@@ -4,285 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ultimate Premium Slot Tracker with Mayra Voice AI</title>
-    <style>:root {
-    --bg-color: #0b0f19;
-    --card-bg: #151f32;
-    --text-color: #f8fafc;
-    --primary: #3b82f6;
-    --success: #22c55e;
-    --danger: #ef4444;
-    --border: #24324d;
-    --accent: #a855f7;
-}
-
-.slot-free {
-    border: 2px solid green;
-    background-color: #e8f5e9;
-}
-
-.slot-booked {
-    border: 2px solid red;
-    background-color: #ffebee;
-}
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    margin: 0;
-    padding: 20px;
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.top-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.lang-switch button {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    color: #fff;
-    padding: 6px 15px;
-    cursor: pointer;
-    border-radius: 20px;
-    font-weight: bold;
-}
-
-.lang-switch button.active {
-    background: var(--primary);
-    border-color: var(--primary);
-}
-
-h1 {
-    text-align: center;
-    margin: 10px 0 25px 0;
-    font-weight: 700;
-}
-
-.ai-panel {
-    background: rgba(168, 85, 247, 0.1);
-    border: 1px solid rgba(168, 85, 247, 0.3);
-    border-radius: 14px;
-    padding: 20px;
-    margin-bottom: 25px;
-    text-align: center;
-    position: relative;
-}
-
-.ai-header {
-    font-weight: bold;
-    color: #c084fc;
-    margin-bottom: 10px;
-    font-size: 18px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-}
-
-.status-dot {
-    height: 8px;
-    width: 8px;
-    background-color: #22c55e;
-    border-radius: 50%;
-    display: inline-block;
-}
-
-.status-dot.active {
-    background-color: #22c55e;
-    box-shadow: 0 0 10px #22c55e;
-    animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.2); opacity: 0.5; }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-.ai-instructions {
-    font-size: 14px;
-    color: #94a3b8;
-    margin-bottom: 15px;
-}
-
-.voice-btn {
-    background: var(--accent);
-    color: white;
-    border: none;
-    padding: 10px 25px;
-    border-radius: 30px;
-    font-size: 15px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.voice-btn:hover {
-    transform: scale(1.05);
-    background: #9333ea;
-}
-
-.ai-response {
-    margin-top: 12px;
-    font-size: 14px;
-    color: #a7f3d0;
-    font-weight: 500;
-    min-height: 20px;
-}
-
-.slots-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 25px;
-}
-
-.slot-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px;
-    position: relative;
-    padding-bottom: 15px;
-}
-
-.card-banner {
-    height: 90px;
-    background-size: cover;
-    background-position: center;
-    border-radius: 8px;
-    margin-bottom: 12px;
-}
-
-.avatar-container {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    background-size: cover;
-    background-position: center;
-    border: 2px solid var(--border);
-    margin: -45px auto 10px auto;
-    background-color: var(--bg-color);
-}
-
-.slot-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-}
-
-.slot-number {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.status-badge {
-    padding: 4px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-}
-
-.status-badge.booked {
-    background: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
-}
-
-.status-badge.available {
-    background: rgba(34, 197, 94, 0.2);
-    color: #22c55e;
-}
-
-.input-group-full {
-    width: 100%;
-}
-
-.label-edit {
-    width: 100%;
-    background: transparent;
-    border: none;
-    color: #94a3b8;
-    font-size: 14px;
-    margin-bottom: 4px;
-}
-
-.val-input {
-    width: 100%;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--border);
-    color: white;
-    padding: 8px;
-    border-radius: 6px;
-    margin-bottom: 10px;
-}
-
-.details-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-}
-
-.input-group {
-    width: 100%;
-}
-
-.class-label-edit {
-    background: transparent;
-    border: none;
-    color: #64748b;
-    font-size: 12px;
-    margin-bottom: 2px;
-}
-
-.class-val-input {
-    width: 100%;
-    background: transparent;
-    border: none;
-    color: #cbd5e1;
-    font-size: 14px;
-}
-
-.action-buttons {
-    display: flex;
-    gap: 10px;
-}
-
-.btn {
-    flex: 1;
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.btn-edit {
-    background: var(--primary);
-    color: white;
-}
-
-.btn-book {
-    background: var(--success);
-    color: white;
-}
-
-.btn-toggle {
-    background: #334155;
-    color: white;
-}
-
-.file-input {
-    display: none;
-}
-
+    <style>
         :root {
             --bg-color: #0b0f19;
             --card-bg: #151f32;
@@ -424,6 +146,15 @@ h1 {
             padding-bottom: 15px;
         }
 
+        .slot-card.booked {
+            border: 2px solid var(--danger);
+            background-color: rgba(239, 68, 68, 0.05);
+        }
+
+        .slot-card.available {
+            border: 2px solid var(--success);
+        }
+
         .card-banner {
             height: 90px;
             background: #1e293b;
@@ -444,6 +175,7 @@ h1 {
             background-size: cover;
             background-position: center;
             overflow: hidden;
+            z-index: 10;
         }
 
         .upload-overlay {
@@ -456,9 +188,11 @@ h1 {
             opacity: 0;
             transition: opacity 0.2s;
             cursor: pointer;
-            font-size: 10px;
+            font-size: 12px;
+            font-weight: bold;
             color: #fff;
             text-align: center;
+            z-index: 15;
         }
 
         .card-banner:hover .upload-overlay,
@@ -475,9 +209,15 @@ h1 {
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 8px;
         }
 
-        .slot-number { font-weight: bold; font-size: 18px; }
+        .slot-number { 
+            font-weight: bold; 
+            font-size: 16px; 
+            color: #fff;
+        }
 
         .status-badge {
             font-size: 11px;
@@ -551,8 +291,28 @@ h1 {
         .btn-edit { background: var(--primary); color: white; }
         .btn-save { background: var(--success); color: white; display: none; }
         .btn-toggle { background: #334155; color: #cbd5e1; }
-
+        
         .file-input { display: none; }
+
+        /* Link specific styling */
+        .link-wrapper {
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            background: rgba(0,0,0,0.3);
+            padding: 3px 6px;
+            border-radius: 6px;
+            border: 1px solid #334155;
+        }
+        
+        .link-input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 11px;
+            width: 70px;
+            outline: none;
+        }
     </style>
 </head>
 <body>
@@ -567,7 +327,6 @@ h1 {
 
     <h1 id="main-title">Premium Slot Tracker</h1>
 
-    <!-- Mayra Voice AI Panel -->
     <div class="ai-panel">
         <div class="ai-header">
             <span class="status-dot" id="mayra-status"></span>
@@ -580,14 +339,12 @@ h1 {
         <div class="ai-response" id="ai-output">Mayra is sleeping...</div>
     </div>
 
-    <!-- Slots Grid Container -->
     <div class="slots-grid" id="slots-container"></div>
 </div>
 
 <script>
     let currentLang = 'bn';
     let recognition;
-    let isMayraListening = false;
 
     const langData = {
         bn: {
@@ -620,9 +377,9 @@ h1 {
         }
     };
 
-    // Load Data
+    // Load Data - Added 'tiktok' property for new link feature
     let slotsData = JSON.parse(localStorage.getItem('megaSlotsData'));
-    if (!slotsData) {
+    if (!slotsData || slotsData.length === 0) {
         slotsData = [];
         for (let i = 1; i <= 20; i++) {
             slotsData.push({
@@ -631,18 +388,20 @@ h1 {
                 status: 'Available',
                 banner: '',
                 avatar: '',
-                label1: langData.bn.lbl1,
-                val1: '',
-                label2: langData.bn.lbl2,
-                val2: '',
-                label3: langData.bn.lbl3,
-                val3: '',
-                label4: langData.bn.lbl4,
-                val4: ''
+                tiktok: '',
+                label1: langData.bn.lbl1, val1: '',
+                label2: langData.bn.lbl2, val2: '',
+                label3: langData.bn.lbl3, val3: '',
+                label4: langData.bn.lbl4, val4: ''
             });
         }
         localStorage.setItem('megaSlotsData', JSON.stringify(slotsData));
     }
+
+    // Ensure older data has the tiktok field
+    slotsData.forEach(slot => {
+        if (slot.tiktok === undefined) slot.tiktok = '';
+    });
 
     function switchLanguage(lang) {
         currentLang = lang;
@@ -660,6 +419,9 @@ h1 {
             const isBooked = slot.status === 'Booked';
             const statusText = isBooked ? langData[currentLang].booked : langData[currentLang].available;
             const toggleText = isBooked ? langData[currentLang].release : langData[currentLang].book;
+            
+            // Format link URL properly
+            const formattedLink = slot.tiktok.startsWith('http') ? slot.tiktok : (slot.tiktok ? 'https://' + slot.tiktok : '');
 
             const card = document.createElement('div');
             card.className = `slot-card ${isBooked ? 'booked' : 'available'}`;
@@ -667,17 +429,26 @@ h1 {
             card.innerHTML = `
                 <div class="card-banner" style="background-image: url('${slot.banner || ''}')">
                     <div class="upload-overlay" onclick="triggerUpload('banner', ${slot.id})">📸 Cover</div>
-                    <input type="file" id="file-banner-${slot.id}" class="file-input" onchange="handleUpload(this, 'banner', ${slot.id})">
+                    <input type="file" id="file-banner-${slot.id}" class="file-input" onchange="handleUpload(this, 'banner', ${slot.id})" accept="image/*">
                     
                     <div class="avatar-container" style="background-image: url('${slot.avatar || ''}')">
                         <div class="upload-overlay" onclick="triggerUpload('avatar', ${slot.id})">👤 Pic</div>
-                        <input type="file" id="file-avatar-${slot.id}" class="file-input" onchange="handleUpload(this, 'avatar', ${slot.id})">
+                        <input type="file" id="file-avatar-${slot.id}" class="file-input" onchange="handleUpload(this, 'avatar', ${slot.id})" accept="image/*">
                     </div>
                 </div>
 
                 <div class="slot-content">
+                    
                     <div class="slot-header">
-                        <span class="slot-number">Slot ${slot.id}</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="slot-number">Slot ${slot.id}</span>
+                            
+                            <div class="link-wrapper">
+                                <input type="text" id="link-${slot.id}" class="link-input" value="${slot.tiktok}" placeholder="Add Link...">
+                                <button onclick="saveLink(${slot.id})" style="background:var(--primary); color:white; border:none; border-radius:4px; font-size:10px; cursor:pointer; padding:3px 6px;">Save</button>
+                                ${slot.tiktok ? `<a href="${formattedLink}" target="_blank" style="text-decoration:none; color:#10b981; font-size:14px; margin-left:2px;" title="Visit Link">🔗</a>` : ''}
+                            </div>
+                        </div>
                         <span class="status-badge ${slot.status.toLowerCase()}">${statusText}</span>
                     </div>
                     
@@ -716,6 +487,7 @@ h1 {
         });
     }
 
+    // FIXED IMAGE UPLOAD SYSTEM
     function triggerUpload(type, id) {
         document.getElementById(`file-${type}-${id}`).click();
     }
@@ -724,15 +496,30 @@ h1 {
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                const idx = slotsData.findIndex(s => s.id === id);
+                const parsedId = parseInt(id);
+                const idx = slotsData.findIndex(s => s.id === parsedId);
+                
                 if (idx > -1) {
                     if (type === 'banner') slotsData[idx].banner = e.target.result;
                     if (type === 'avatar') slotsData[idx].avatar = e.target.result;
+                    
                     localStorage.setItem('megaSlotsData', JSON.stringify(slotsData));
                     renderSlots();
                 }
             };
             reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // SAVE LINK FUNCTION
+    function saveLink(id) {
+        const parsedId = parseInt(id);
+        const idx = slotsData.findIndex(s => s.id === parsedId);
+        if (idx > -1) {
+            const linkVal = document.getElementById(`link-${id}`).value.trim();
+            slotsData[idx].tiktok = linkVal;
+            localStorage.setItem('megaSlotsData', JSON.stringify(slotsData));
+            renderSlots();
         }
     }
 
@@ -751,7 +538,8 @@ h1 {
     }
 
     function saveSlot(id) {
-        const idx = slotsData.findIndex(s => s.id === id);
+        const parsedId = parseInt(id);
+        const idx = slotsData.findIndex(s => s.id === parsedId);
         if (idx > -1) {
             slotsData[idx].name = document.getElementById(`name-${id}`).value.trim();
             slotsData[idx].label1 = document.getElementById(`lbl1-${id}`).value.trim();
@@ -769,7 +557,8 @@ h1 {
     }
 
     function toggleStatus(id) {
-        const idx = slotsData.findIndex(s => s.id === id);
+        const parsedId = parseInt(id);
+        const idx = slotsData.findIndex(s => s.id === parsedId);
         if (idx > -1) {
             if (slotsData[idx].status === 'Booked') {
                 slotsData[idx].status = 'Available';
@@ -777,6 +566,7 @@ h1 {
                 slotsData[idx].val1 = ''; slotsData[idx].val2 = '';
                 slotsData[idx].val3 = ''; slotsData[idx].val4 = '';
                 slotsData[idx].banner = ''; slotsData[idx].avatar = '';
+                slotsData[idx].tiktok = ''; // Clear link when slot is freed
             } else {
                 slotsData[idx].status = 'Booked';
             }
@@ -796,7 +586,7 @@ h1 {
         recognition = new SpeechRecognition();
         recognition.continuous = true;
         recognition.interimResults = false;
-        recognition.lang = 'bn-BD'; // Set Language to Bengali
+        recognition.lang = 'bn-BD';
 
         recognition.onstart = () => {
             document.getElementById('mayra-status').className = 'status-dot active';
@@ -809,7 +599,6 @@ h1 {
             const text = event.results[currentResultIndex][0].transcript.toLowerCase().trim();
             console.log("শুনেছি:", text);
 
-            // Wake word trigger
             if (text.includes("মায়রা") || text.includes("mayra") || text.includes("মাইরা")) {
                 document.getElementById('ai-output').innerText = "🎙️ মায়রা আপনার কমান্ড শুনছে...";
                 executeVoiceCommand(text);
@@ -822,7 +611,6 @@ h1 {
         };
 
         recognition.onend = () => {
-            // Automatically restarts Mayra to keep her active inside the website
             recognition.start();
         };
 
@@ -832,7 +620,6 @@ h1 {
     function executeVoiceCommand(cmd) {
         const output = document.getElementById('ai-output');
         
-        // Find Slot Number
         const slotMatch = cmd.match(/স্লট\s*(\d+)/) || cmd.match(/slot\s*(\d+)/);
         if (!slotMatch) {
             output.innerText = "❌ স্লট নম্বরটি বুঝতে পারিনি। (যেমন: স্লট ৫ বলুন)";
@@ -847,7 +634,6 @@ h1 {
             return;
         }
 
-        // Action 1: Change Name (নাম পরিবর্তন)
         if (cmd.includes("নাম") || cmd.includes("name")) {
             let cleanName = cmd.replace(/.*(?:নাম|name)\s*/, '')
                                .replace(/(?:করে\s*দাও|করো|দাও|হবে)/g, '')
@@ -864,11 +650,9 @@ h1 {
             }
         }
 
-        // Action 2: Change Figures (ভিউ বা টাকা পরিবর্তন)
         let numMatch = cmd.match(/(\d+)/g);
         let valueToSet = null;
         
-        // Pick the number that is NOT the slot number
         if (numMatch) {
             for (let num of numMatch) {
                 if (parseInt(num) !== slotId) {
@@ -902,10 +686,9 @@ h1 {
             }
         }
 
-        output.innerText = "❌ কমান্ডটি ঠিক বুঝতে পারিনি, রাব্বি ভাই। আবার বলুন।";
+        output.innerText = "❌ কমান্ডটি ঠিক বুঝতে পারিনি। আবার বলুন।";
     }
 
-    // Auto-load UI
     switchLanguage('bn');
 </script>
 
