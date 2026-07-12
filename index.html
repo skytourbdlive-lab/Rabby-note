@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Premium Slot Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --bg-color: #0f172a;
@@ -12,7 +13,9 @@
             --accent-color: #38bdf8;
             --success-color: #22c55e;
             --danger-color: #ef4444;
+            --warning-color: #f59e0b;
             --border-color: #334155;
+            --input-bg: #0b0f19;
         }
 
         * {
@@ -29,7 +32,7 @@
         }
 
         .container {
-            max-width: 1280px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
@@ -46,14 +49,9 @@
             margin-bottom: 5px;
         }
 
-        header p {
-            color: #94a3b8;
-            font-size: 0.9rem;
-        }
-
         .slots-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 20px;
         }
 
@@ -65,27 +63,29 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.2);
         }
 
-        .slot-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 8px;
-        }
-
-        .slot-title {
-            font-weight: bold;
+        /* Editable Slot Name */
+        .slot-name-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px dashed var(--border-color);
             color: var(--accent-color);
-            font-size: 1.1rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            padding: 5px 0;
+            outline: none;
+        }
+        .slot-name-input:focus {
+            border-bottom-color: var(--accent-color);
         }
 
         .image-box {
             width: 100%;
             height: 160px;
-            background-color: #0b0f19;
+            background-color: var(--input-bg);
             border: 2px dashed #475569;
             border-radius: 8px;
             display: flex;
@@ -109,9 +109,7 @@
             padding: 10px;
         }
 
-        .file-input {
-            display: none;
-        }
+        .file-input { display: none; }
 
         .input-group {
             display: flex;
@@ -130,21 +128,19 @@
             gap: 6px;
         }
 
-        input[type="text"], input[type="tel"] {
+        input[type="text"], input[type="tel"], input[type="number"] {
             flex: 1;
-            padding: 8px 12px;
-            background-color: #0f172a;
+            padding: 8px 10px;
+            background-color: var(--input-bg);
             border: 1px solid var(--border-color);
             border-radius: 6px;
             color: var(--text-color);
             font-size: 0.85rem;
             outline: none;
-            transition: border-color 0.2s;
+            transition: 0.2s;
         }
 
-        input:focus {
-            border-color: var(--accent-color);
-        }
+        input:focus { border-color: var(--accent-color); }
 
         .btn {
             padding: 8px 12px;
@@ -153,29 +149,62 @@
             font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
-            transition: opacity 0.2s;
+            color: white;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            gap: 5px;
+            transition: 0.2s;
         }
 
-        .btn:hover {
-            opacity: 0.9;
-        }
+        .btn:hover { opacity: 0.8; }
+        .btn-action { background-color: var(--accent-color); }
+        .btn-wa { background-color: #25D366; font-size: 1.1rem; padding: 8px 15px;}
+        .btn-danger { background-color: var(--danger-color); width: 100%; margin-top: 5px;}
 
-        .btn-action {
-            background-color: var(--accent-color);
-        }
-
-        .btn-wa {
-            background-color: var(--success-color);
-        }
-
-        .btn-danger {
-            background-color: var(--danger-color);
-            width: 100%;
+        /* Tracker Section */
+        .tracker-box {
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
             margin-top: 5px;
+        }
+
+        .tracker-title {
+            font-size: 0.8rem;
+            color: #cbd5e1;
+            margin-bottom: 8px;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 4px;
+        }
+
+        .tracker-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .tracker-result {
+            font-size: 0.85rem;
+            background-color: var(--input-bg);
+            padding: 6px;
+            border-radius: 4px;
+            text-align: center;
+            color: #e2e8f0;
+        }
+
+        .highlight-money { color: var(--warning-color); font-weight: bold; font-size: 1rem;}
+        .highlight-view { color: var(--accent-color); font-weight: bold; font-size: 1rem;}
+
+        /* Hide Number Arrows */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
         }
     </style>
 </head>
@@ -183,8 +212,8 @@
 
 <div class="container">
     <header>
-        <h1>Slot Tracker Pro</h1>
-        <p>ছবি, লিংক এবং হোয়াটসঅ্যাপ/একাউন্ট নম্বর ট্র্যাকিং সিস্টেম</p>
+        <h1>Slot Tracker Pro Max</h1>
+        <p>লাইভ হিসাব, ভিউ ট্র্যাকিং, ছবি, লিংক এবং হোয়াটসঅ্যাপ প্যানেল</p>
     </header>
 
     <div class="slots-grid" id="slotsContainer">
@@ -192,11 +221,9 @@
 </div>
 
 <script>
-    // আপনি এখানে স্লটের সংখ্যা কাস্টমাইজ করতে পারেন (যেমন: ১২, ২০ বা ২৪টি)
-    const TOTAL_SLOTS = 16; 
+    const TOTAL_SLOTS = 16; // স্লটের সংখ্যা
     const slotsContainer = document.getElementById('slotsContainer');
 
-    // পেজ লোড হওয়ার সময় স্লটগুলো জেনারেট করা
     function initTracker() {
         for (let i = 1; i <= TOTAL_SLOTS; i++) {
             createSlotCard(i);
@@ -204,14 +231,11 @@
         }
     }
 
-    // একটি স্লট কার্ডের HTML তৈরি করা
     function createSlotCard(id) {
         const card = document.createElement('div');
         card.className = 'slot-card';
         card.innerHTML = `
-            <div class="slot-header">
-                <span class="slot-title">Slot ${id}</span>
-            </div>
+            <input type="text" class="slot-name-input" id="name-${id}" placeholder="স্লটের নাম লিখুন (যেমন: Slot ${id})" oninput="saveData(${id})">
             
             <div class="image-box" onclick="document.getElementById('file-${id}').click()">
                 <div class="image-placeholder" id="placeholder-${id}">📸 ক্লিক করে ছবি আপলোড করুন</div>
@@ -222,7 +246,7 @@
             <div class="input-group">
                 <label>লিংক / ইউআরএল:</label>
                 <div class="input-wrapper">
-                    <input type="text" id="link-${id}" placeholder="https://..." oninput="saveTextData(${id})">
+                    <input type="text" id="link-${id}" placeholder="https://..." oninput="saveData(${id})">
                     <button class="btn btn-action" onclick="openLink(${id})">Open</button>
                 </div>
             </div>
@@ -230,17 +254,35 @@
             <div class="input-group">
                 <label>অ্যাকাউন্ট / WhatsApp নম্বর:</label>
                 <div class="input-wrapper">
-                    <input type="tel" id="number-${id}" placeholder="নম্বর লিখুন..." oninput="saveTextData(${id})">
-                    <button class="btn btn-wa" onclick="openWhatsApp(${id})" title="সরাসরি হোয়াটসঅ্যাপ করুন">WA</button>
+                    <input type="tel" id="number-${id}" placeholder="নম্বর লিখুন..." oninput="saveData(${id})">
+                    <button class="btn btn-wa" onclick="openWhatsApp(${id})" title="হোয়াটসঅ্যাপে মেসেজ দিন"><i class="fab fa-whatsapp"></i></button>
                 </div>
             </div>
 
-            <button class="btn btn-danger" onclick="clearSlot(${id})">Clear Slot</button>
+            <div class="tracker-box">
+                <div class="tracker-title">টাকা / পেমেন্ট হিসাব</div>
+                <div class="tracker-grid">
+                    <input type="number" id="target-money-${id}" placeholder="টার্গেট (৳)" oninput="calcMoney(${id})">
+                    <input type="number" id="paid-money-${id}" placeholder="জমা (৳)" oninput="calcMoney(${id})">
+                </div>
+                <div class="tracker-result">বাকি আছে: <span id="due-money-${id}" class="highlight-money">0</span> ৳</div>
+            </div>
+
+            <div class="tracker-box">
+                <div class="tracker-title">ভিডিও ভিউ ট্র্যাকিং</div>
+                <div class="tracker-grid">
+                    <input type="number" id="target-view-${id}" placeholder="টার্গেট ভিউ" oninput="calcViews(${id})">
+                    <input type="number" id="current-view-${id}" placeholder="বর্তমান ভিউ" oninput="calcViews(${id})">
+                </div>
+                <div class="tracker-result">বাকি ভিউ: <span id="due-view-${id}" class="highlight-view">0</span></div>
+            </div>
+
+            <button class="btn btn-danger" onclick="clearSlot(${id})">Clear All Data</button>
         `;
         slotsContainer.appendChild(card);
     }
 
-    // ইমেজ আপলোড এবং কম্প্রেস করা (Local Storage সাইজ বাঁচানোর জন্য)
+    // ইমেজ আপলোড
     function uploadAndCompress(event, id) {
         const file = event.target.files[0];
         if (!file) return;
@@ -251,22 +293,14 @@
             img.onload = function() {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
-                
-                // ছবির সাইজ অপটিমাইজেশন (সর্বোচ্চ ৪০০ পিক্সেল চওড়া)
                 const MAX_WIDTH = 400;
                 const scale = MAX_WIDTH / img.width;
                 canvas.width = MAX_WIDTH;
                 canvas.height = img.height * scale;
-                
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                
-                // কোয়ালিটি ০.৫ এ সেট করা হয়েছে যাতে স্টোরেজ ফুল না হয়
                 const compressedBase64 = canvas.toDataURL('image/jpeg', 0.5);
                 
-                // ডিসপ্লে আপডেট
                 displayImage(id, compressedBase64);
-                
-                // লোকাল স্টোরেজে সেভ
                 localStorage.setItem(`slot_${id}_img`, compressedBase64);
             }
             img.src = e.target.result;
@@ -274,7 +308,6 @@
         reader.readAsDataURL(file);
     }
 
-    // ছবি দেখানোর ফাংশন
     function displayImage(id, src) {
         const placeholder = document.getElementById(`placeholder-${id}`);
         const imgView = document.getElementById(`view-img-${id}`);
@@ -289,67 +322,97 @@
         }
     }
 
-    // টেক্সট ইনপুট (লিংক ও নম্বর) লোকাল স্টোরেজে সেভ করা
-    function saveTextData(id) {
-        const linkVal = document.getElementById(`link-${id}`).value;
-        const numVal = document.getElementById(`number-${id}`).value;
+    // হিসাব নিকাশ লাইভ আপডেট ও সেভ করা (টাকা)
+    function calcMoney(id) {
+        let target = parseFloat(document.getElementById(`target-money-${id}`).value) || 0;
+        let paid = parseFloat(document.getElementById(`paid-money-${id}`).value) || 0;
+        let due = target - paid;
         
-        localStorage.setItem(`slot_${id}_link`, linkVal);
-        localStorage.setItem(`slot_${id}_num`, numVal);
+        document.getElementById(`due-money-${id}`).innerText = due;
+        saveData(id); // অটো সেভ
     }
 
-    // লোকাল স্টোরেজ থেকে ডেটা লোড করা
+    // হিসাব নিকাশ লাইভ আপডেট ও সেভ করা (ভিউ)
+    function calcViews(id) {
+        let target = parseFloat(document.getElementById(`target-view-${id}`).value) || 0;
+        let current = parseFloat(document.getElementById(`current-view-${id}`).value) || 0;
+        let due = target - current;
+        
+        document.getElementById(`due-view-${id}`).innerText = due;
+        saveData(id); // অটো সেভ
+    }
+
+    // সব ডাটা একসাথে সেভ করা
+    function saveData(id) {
+        localStorage.setItem(`slot_${id}_name`, document.getElementById(`name-${id}`).value);
+        localStorage.setItem(`slot_${id}_link`, document.getElementById(`link-${id}`).value);
+        localStorage.setItem(`slot_${id}_num`, document.getElementById(`number-${id}`).value);
+        
+        localStorage.setItem(`slot_${id}_tMoney`, document.getElementById(`target-money-${id}`).value);
+        localStorage.setItem(`slot_${id}_pMoney`, document.getElementById(`paid-money-${id}`).value);
+        
+        localStorage.setItem(`slot_${id}_tView`, document.getElementById(`target-view-${id}`).value);
+        localStorage.setItem(`slot_${id}_cView`, document.getElementById(`current-view-${id}`).value);
+    }
+
+    // লোড ডাটা
     function loadSlotData(id) {
-        const savedImg = localStorage.getItem(`slot_${id}_img`);
-        const savedLink = localStorage.getItem(`slot_${id}_link`);
-        const savedNum = localStorage.getItem(`slot_${id}_num`);
+        const img = localStorage.getItem(`slot_${id}_img`);
+        if (img) displayImage(id, img);
 
-        if (savedImg) displayImage(id, savedImg);
-        if (savedLink) document.getElementById(`link-${id}`).value = savedLink;
-        if (savedNum) document.getElementById(`number-${id}`).value = savedNum;
+        document.getElementById(`name-${id}`).value = localStorage.getItem(`slot_${id}_name`) || '';
+        document.getElementById(`link-${id}`).value = localStorage.getItem(`slot_${id}_link`) || '';
+        document.getElementById(`number-${id}`).value = localStorage.getItem(`slot_${id}_num`) || '';
+        
+        document.getElementById(`target-money-${id}`).value = localStorage.getItem(`slot_${id}_tMoney`) || '';
+        document.getElementById(`paid-money-${id}`).value = localStorage.getItem(`slot_${id}_pMoney`) || '';
+        
+        document.getElementById(`target-view-${id}`).value = localStorage.getItem(`slot_${id}_tView`) || '';
+        document.getElementById(`current-view-${id}`).value = localStorage.getItem(`slot_${id}_cView`) || '';
+
+        // ভ্যালু বসানোর পর লাইভ হিসাবটা আবার আপডেট করা
+        calcMoney(id);
+        calcViews(id);
     }
 
-    // লিংক ওপেন করা
     function openLink(id) {
         const url = document.getElementById(`link-${id}`).value;
-        if (url) {
-            window.open(url, '_blank');
-        } else {
-            alert('কোনো লিংক সেভ করা নেই!');
-        }
+        if (url) window.open(url, '_blank');
+        else alert('কোনো লিংক সেভ করা নেই!');
     }
 
-    // সরাসরি WhatsApp চ্যাট ওপেন করা
     function openWhatsApp(id) {
         let num = document.getElementById(`number-${id}`).value;
         if (num) {
-            // শুধুমাত্র সংখ্যাগুলো আলাদা করা
             num = num.replace(/\D/g, '');
-            // বাংলাদেশের কান্ট্রি কোড না থাকলে যুক্ত করা
-            if (num.length === 11 && num.startsWith('01')) {
-                num = '88' + num;
-            }
+            if (num.length === 11 && num.startsWith('01')) num = '88' + num;
             window.open(`https://wa.me/${num}`, '_blank');
         } else {
             alert('কোনো নম্বর সেভ করা নেই!');
         }
     }
 
-    // একটি নির্দিষ্ট স্লটের সব ডেটা ক্লিয়ার করা
     function clearSlot(id) {
-        if(confirm(`আপনি কি নিশ্চিতভাবে Slot ${id} এর সব তথ্য মুছে ফেলতে চান?`)) {
-            localStorage.removeItem(`slot_${id}_img`);
-            localStorage.removeItem(`slot_${id}_link`);
-            localStorage.removeItem(`slot_${id}_num`);
+        if(confirm(`সব ডাটা মুছে ফেলতে চান?`)) {
+            // Remove from local storage
+            const keys = ['img', 'name', 'link', 'num', 'tMoney', 'pMoney', 'tView', 'cView'];
+            keys.forEach(k => localStorage.removeItem(`slot_${id}_${k}`));
             
+            // Clear inputs
             displayImage(id, null);
+            document.getElementById(`name-${id}`).value = '';
             document.getElementById(`link-${id}`).value = '';
             document.getElementById(`number-${id}`).value = '';
-            document.getElementById(`file-${id}`).value = '';
+            document.getElementById(`target-money-${id}`).value = '';
+            document.getElementById(`paid-money-${id}`).value = '';
+            document.getElementById(`target-view-${id}`).value = '';
+            document.getElementById(`current-view-${id}`).value = '';
+            
+            calcMoney(id);
+            calcViews(id);
         }
     }
 
-    // ট্র্যাকার রান করা
     initTracker();
 </script>
 
