@@ -4,7 +4,285 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ultimate Premium Slot Tracker with Mayra Voice AI</title>
-    <style>
+    <style>:root {
+    --bg-color: #0b0f19;
+    --card-bg: #151f32;
+    --text-color: #f8fafc;
+    --primary: #3b82f6;
+    --success: #22c55e;
+    --danger: #ef4444;
+    --border: #24324d;
+    --accent: #a855f7;
+}
+
+.slot-free {
+    border: 2px solid green;
+    background-color: #e8f5e9;
+}
+
+.slot-booked {
+    border: 2px solid red;
+    background-color: #ffebee;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.lang-switch button {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    color: #fff;
+    padding: 6px 15px;
+    cursor: pointer;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.lang-switch button.active {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+h1 {
+    text-align: center;
+    margin: 10px 0 25px 0;
+    font-weight: 700;
+}
+
+.ai-panel {
+    background: rgba(168, 85, 247, 0.1);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 25px;
+    text-align: center;
+    position: relative;
+}
+
+.ai-header {
+    font-weight: bold;
+    color: #c084fc;
+    margin-bottom: 10px;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-dot {
+    height: 8px;
+    width: 8px;
+    background-color: #22c55e;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.status-dot.active {
+    background-color: #22c55e;
+    box-shadow: 0 0 10px #22c55e;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.5; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.ai-instructions {
+    font-size: 14px;
+    color: #94a3b8;
+    margin-bottom: 15px;
+}
+
+.voice-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.voice-btn:hover {
+    transform: scale(1.05);
+    background: #9333ea;
+}
+
+.ai-response {
+    margin-top: 12px;
+    font-size: 14px;
+    color: #a7f3d0;
+    font-weight: 500;
+    min-height: 20px;
+}
+
+.slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 25px;
+}
+
+.slot-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.card-banner {
+    height: 90px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+
+.avatar-container {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    border: 2px solid var(--border);
+    margin: -45px auto 10px auto;
+    background-color: var(--bg-color);
+}
+
+.slot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.slot-number {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.status-badge.booked {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.status-badge.available {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+}
+
+.input-group-full {
+    width: 100%;
+}
+
+.label-edit {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.val-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    color: white;
+    padding: 8px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.input-group {
+    width: 100%;
+}
+
+.class-label-edit {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-size: 12px;
+    margin-bottom: 2px;
+}
+
+.class-val-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: #cbd5e1;
+    font-size: 14px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-edit {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-book {
+    background: var(--success);
+    color: white;
+}
+
+.btn-toggle {
+    background: #334155;
+    color: white;
+}
+
+.file-input {
+    display: none;
+}
+
         :root {
             --bg-color: #0b0f19;
             --card-bg: #151f32;
