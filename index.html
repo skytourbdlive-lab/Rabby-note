@@ -14,7 +14,7 @@
             --border-color: #334155;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --green-glow: #4ade80;
+            --green-glow: #4ade80; /* Theme Accent Color */
             --btn-blue: #3b82f6;
             --btn-green: #22c55e;
             --btn-red: #ef4444;
@@ -29,15 +29,14 @@
             --bg-dark: #050505;
             --card-bg: #111111;
             --input-bg: #1a1a1a;
-            --border-color: #b8860b; /* Golden Dark */
+            --border-color: #b8860b; 
             --text-main: #fcfcfc;
             --text-muted: #aaaaaa;
-            --green-glow: #ffd700; /* Bright Gold */
             --btn-blue: #444444;
             --btn-green: linear-gradient(45deg, #b8860b, #ffd700);
             --btn-red: #cc0000;
             --btn-dark: #222222;
-            --wa-color: #d4af37; /* Muted Gold */
+            --wa-color: #d4af37;
             --danger: #ff4444;
             --shadow-color: rgba(212, 175, 55, 0.2);
         }
@@ -54,21 +53,32 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
-        body { background-color: var(--bg-dark); color: var(--text-main); padding: 15px; padding-top: 130px; padding-bottom: 120px; transition: 0.4s ease; }
+        body { background-color: var(--bg-dark); color: var(--text-main); padding: 15px; padding-top: 150px; padding-bottom: 90px; transition: 0.4s ease; }
 
-        /* Top Navigation */
+        /* Loader */
+        #loader { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s; }
+        #loader img { width: 120px; border-radius: 20px; animation: pulse 1s infinite alternate; }
+
+        /* Top Navigation with Animated Title */
         .top-bar {
             position: fixed; top: 0; left: 0; right: 0; background: var(--card-bg);
-            padding: 15px 20px; display: flex; gap: 10px; align-items: center; justify-content: center;
+            padding: 10px 20px; display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: center;
             border-bottom: 2px solid var(--border-color); z-index: 1000; box-shadow: 0 4px 10px var(--shadow-color);
             transition: 0.4s ease;
         }
 
-        .search-box {
-            display: flex; background: var(--input-bg); border: 1px solid var(--border-color);
-            border-radius: 20px; overflow: hidden; flex: 1; max-width: 350px;
+        .notebook-title {
+            font-weight: bold; font-size: 1.2rem;
+            background: linear-gradient(90deg, #ff8a00, #e52e71, #ff8a00);
+            background-size: 200% auto;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: gradientShine 3s linear infinite;
         }
+        @keyframes gradientShine { to { background-position: 200% center; } }
 
+        .top-bar-controls { display: flex; width: 100%; max-width: 600px; gap: 10px; align-items: center; justify-content: center; }
+
+        .search-box { display: flex; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 20px; overflow: hidden; flex: 1; }
         .search-box input { flex: 1; background: transparent; border: none; padding: 10px 15px; color: white; outline: none; }
         .voice-btn, .lang-btn, .mode-btn { background: transparent; border: none; color: var(--text-muted); padding: 10px 15px; cursor: pointer; transition: 0.2s; font-size: 1.1rem; }
         .voice-btn:hover { color: var(--btn-blue); }
@@ -79,31 +89,32 @@
 
         /* Booked List Marquee */
         .booked-chips {
-            position: fixed; top: 72px; left: 0; right: 0; background: rgba(0, 0, 0, 0.5);
+            position: fixed; top: 95px; left: 0; right: 0; background: rgba(0, 0, 0, 0.5);
             padding: 10px 15px; display: flex; gap: 10px; overflow-x: auto; white-space: nowrap;
             border-bottom: 1px solid var(--border-color); z-index: 999;
         }
         .booked-title { color: var(--text-main); font-size: 0.85rem; background: var(--card-bg); padding: 5px 10px; border-radius: 8px; font-weight: bold; position: sticky; left: 0; z-index: 10;}
         .booked-chip { background: var(--btn-green); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; display: flex; align-items: center; gap: 5px; cursor: pointer; }
 
-        /* Global Stats Footer */
+        /* Compact Global Stats Footer (Mini Tracker) */
         .global-stats-container {
-            position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg);
-            border-top: 2px solid var(--border-color); z-index: 1000; box-shadow: 0 -4px 15px var(--shadow-color);
-            padding: 15px; display: flex; flex-direction: column; gap: 10px; transition: 0.4s ease;
+            position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
+            background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(10px);
+            border: 1px solid var(--green-glow); border-radius: 30px; z-index: 1000; 
+            box-shadow: 0 5px 20px var(--shadow-color); padding: 8px 20px; 
+            display: flex; gap: 20px; align-items: center; justify-content: space-between;
+            width: 95%; max-width: 600px; transition: 0.4s ease;
         }
-        .global-results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center;}
-        .global-res-item { background: var(--input-bg); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); }
-        .global-res-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px;}
-        .global-res-value { font-size: 1.1rem; font-weight: bold;}
+        .global-results-grid { display: flex; gap: 15px; flex: 1; justify-content: space-between; }
+        .global-res-item { display: flex; gap: 5px; align-items: center; }
+        .global-res-label { font-size: 0.75rem; color: var(--text-muted); }
+        .global-res-value { font-size: 0.9rem; font-weight: bold;}
         .val-red { color: var(--danger);} .val-green { color: var(--green-glow);}
-
-        /* Add Slot Button */
+        
         .add-slot-btn {
             background: rgba(74, 222, 128, 0.15); color: var(--green-glow); border: 2px dashed var(--green-glow);
-            width: 50px; height: 50px; border-radius: 50%; font-size: 1.5rem; font-weight: bold;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            margin: 0 auto; transition: 0.3s;
+            width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; font-weight: bold;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s;
         }
         .add-slot-btn:hover { transform: scale(1.1);}
 
@@ -114,7 +125,7 @@
         .slot-card {
             background-color: var(--card-bg); border: 2px solid var(--green-glow);
             border-radius: 12px; overflow: hidden; position: relative; display: flex; flex-direction: column;
-            transition: 0.4s ease;
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
         }
         .delete-slot-btn {
             position: absolute; top: 10px; right: 10px; background: rgba(239, 68, 68, 0.8); color: white;
@@ -148,30 +159,31 @@
         .input-group label { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
         .input-box { background: var(--input-bg); border: 1px solid var(--border-color); padding: 8px 10px; border-radius: 6px; color: white; width: 100%; outline: none; font-size: 0.85rem; color-scheme: dark;}
         .input-box:focus { border-color: var(--green-glow); }
+        .input-box:disabled, .suffix-input input:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .wa-group { display: flex; gap: 10px; }
         .wa-btn { background: var(--wa-color); border: none; color: white; width: 40px; border-radius: 6px; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
 
-        /* Custom Suffix Input */
+        /* Timer Display */
+        .timer-display { background: rgba(0,0,0,0.3); border: 1px dashed var(--border-color); border-radius: 6px; text-align: center; font-family: monospace; font-size: 1rem; color: var(--green-glow); font-weight: bold; padding: 5px; display: none; }
+        .timer-display.expired { color: var(--danger); border-color: var(--danger); animation: blink 1s infinite; }
+
         .suffix-input { position: relative; display: flex; align-items: center; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden;}
         .suffix-input input { flex: 1; background: transparent; border: none; padding: 8px 10px; padding-right: 45px; color: white; outline: none; font-size: 0.85rem; width: 100%;}
         .suffix-input input:focus { background: rgba(74, 222, 128, 0.05); }
         .suffix-text { position: absolute; right: 10px; font-size: 0.75rem; color: var(--green-glow); font-weight: bold; pointer-events: none; opacity: 0.7; }
         
-        /* Input with Delete Button */
         .deletable-field { padding-right: 70px !important; }
         .del-field-btn { position: absolute; right: 40px; background: rgba(239, 68, 68, 0.2); color: var(--danger); border: none; height: 100%; width: 25px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
         .del-field-btn:hover { background: var(--danger); color: white; }
+        .del-field-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* Section Boxes */
         .section-box { border: 1px dashed var(--border-color); padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.2); position: relative;}
         .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.9rem; font-weight: bold; color: var(--text-muted);}
         
-        .add-field-btn {
-            background: rgba(74, 222, 128, 0.2); color: var(--green-glow); border: none;
-            width: 24px; height: 24px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; transition: 0.2s;
-        }
+        .add-field-btn { background: rgba(74, 222, 128, 0.2); color: var(--green-glow); border: none; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; transition: 0.2s; }
         .add-field-btn:hover { background: var(--green-glow); color: var(--bg-dark); }
+        .add-field-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px;}
         .dynamic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
@@ -179,26 +191,36 @@
         .live-track { font-size: 0.9rem; color: var(--green-glow); text-align: right; font-weight: bold; margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 8px;}
         .live-track.due { color: var(--danger); }
 
-        .action-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 5px; }
+        .action-btns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 5px; }
+        .btn-edit { background: var(--border-color); color: white; border: 1px solid var(--text-muted); padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s;}
+        .btn-edit.active { background: var(--green-glow); color: var(--bg-dark); border-color: var(--green-glow); }
         .btn-save { background: var(--btn-green); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s;}
         .btn-reset { background: var(--btn-dark); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s;}
 
         input[type="file"] { display: none; }
         input[type="number"]::-webkit-inner-spin-button, input[type="number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        @keyframes blink { 50% { opacity: 0.3; } }
     </style>
 </head>
 <body>
 
+    <div id="loader">
+        <img src="1000028553.jpg" alt="Loader">
+    </div>
+
     <div class="top-bar">
-        <button class="mode-btn" id="modeBtn" onclick="toggleThemeMode()">
-            <i class="fas fa-crown"></i> <span class="lang-modeTxt">Premium</span>
-        </button>
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="খুঁজুন..." onkeyup="searchSlots()">
-            <button class="voice-btn" id="voiceBtn" onclick="startVoiceSearch()"><i class="fas fa-microphone"></i></button>
+        <div class="notebook-title">Private Notebook Create By Rabbi</div>
+        <div class="top-bar-controls">
+            <button class="mode-btn" id="modeBtn" onclick="cycleThemeMode()">
+                <i class="fas fa-crown"></i> <span class="lang-modeTxt">Premium</span>
+            </button>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="খুঁজুন..." onkeyup="searchSlots()">
+                <button class="voice-btn" id="voiceBtn" onclick="startVoiceSearch()"><i class="fas fa-microphone"></i></button>
+            </div>
+            <button class="lang-btn" id="langToggle" onclick="toggleLanguage()">EN</button>
         </div>
-        <button class="lang-btn" id="langToggle" onclick="toggleLanguage()">EN</button>
     </div>
 
     <div class="booked-chips">
@@ -206,21 +228,20 @@
         <div id="bookedNamesDisplay" style="display: flex; gap: 10px;">কোনো বুকিং নেই</div>
     </div>
 
-    <div class="slots-container" id="slotsContainer">
-        </div>
+    <div class="slots-container" id="slotsContainer"></div>
 
     <div class="global-stats-container">
         <div class="global-results-grid">
             <div class="global-res-item">
-                <div class="global-res-label lang-globDueTxt">সর্বমোট বাকি টাকা</div>
-                <div class="global-res-value val-red"><span id="grandTotalDue">0</span> ৳</div>
+                <div class="global-res-label lang-globDueTxt">বাকি টাকা:</div>
+                <div class="global-res-value val-red"><span id="grandTotalDue">0</span>৳</div>
             </div>
             <div class="global-res-item">
-                <div class="global-res-label lang-globCompView">মোট দেওয়া ভিউ</div>
+                <div class="global-res-label lang-globCompView">দেওয়া ভিউ:</div>
                 <div class="global-res-value val-green"><span id="grandCompletedViews">0</span></div>
             </div>
             <div class="global-res-item">
-                <div class="global-res-label lang-globDueView">মোট বাকি ভিউ</div>
+                <div class="global-res-label lang-globDueView">বাকি ভিউ:</div>
                 <div class="global-res-value val-red"><span id="grandRemainingViews">0</span></div>
             </div>
         </div>
@@ -228,50 +249,52 @@
     </div>
 
 <script>
-    // State Variables
+    // System Loader
+    window.onload = function() {
+        setTimeout(() => {
+            let loader = document.getElementById('loader');
+            loader.style.opacity = '0';
+            setTimeout(() => loader.style.display = 'none', 500);
+        }, 1000);
+        init();
+    };
+
     let currentMode = localStorage.getItem('app_mode') || 'normal';
     let normalSlots = JSON.parse(localStorage.getItem('normalSlots')) || [generateId()];
-    let premiumSlots = JSON.parse(localStorage.getItem('premiumSlots')) || [];
     let currentLang = 'bn';
+    let countdownTimers = {}; // Store timer intervals
+
+    // Premium Color Palette (30 Colors)
+    const premiumColors = [
+        '#4ade80', '#f87171', '#60a5fa', '#c084fc', '#facc15', '#2dd4bf', '#fb923c', '#a3e635', 
+        '#38bdf8', '#818cf8', '#f472b6', '#fb7185', '#34d399', '#22d3ee', '#8b5cf6', '#d946ef', 
+        '#f43f5e', '#10b981', '#0ea5e9', '#6366f1', '#84cc16', '#eab308', '#f97316', '#ec4899', 
+        '#14b8a6', '#06b6d4', '#3b82f6', '#ef4444', '#22c55e', '#f59e0b'
+    ];
+    let colorIndex = parseInt(localStorage.getItem('themeColorIndex')) || 0;
 
     const textDict = {
         bn: {
-            search: "ইউজার বা নাম্বার খুঁজুন...",
-            slot: "স্লট", linkPlaceholder: "লিংক দিন...", openBtn: "Open",
-            statusFree: "ফ্রি", statusBooked: "বুকড",
-            userName: "ইউজার নেম", waNumber: "হোয়াটসঅ্যাপ নাম্বার", dateLbl: "তারিখ",
-            moneySec: "টাকার হিসাব", viewSec: "ভিউ এর হিসাব",
-            totalTk: "মোট টাকা", advTk: "অ্যাডভান্স", installTk: "কিস্তি", tkSuffix: "টাকা",
-            targetVw: "টার্গেট ভিউ", installVw: "দেওয়া ভিউ", vwSuffix: "ভিউ",
-            remTk: "বাকি টাকা:", remVw: "বাকি ভিউ:",
-            saveBtn: "সেভ করুন", resetBtn: "রিসেট",
-            bookedTitle: "বুক করা স্লটসমূহ:", noBooking: "কোনো বুকিং নেই",
-            globDueTxt: "সর্বমোট বাকি টাকা", globCompView: "মোট দেওয়া ভিউ", globDueView: "মোট বাকি ভিউ",
-            modePremium: "Premium", modeNormal: "Normal"
+            search: "ইউজার বা নাম্বার খুঁজুন...", slot: "স্লট", linkPlaceholder: "লিংক দিন...", openBtn: "Open",
+            statusFree: "ফ্রি", statusBooked: "বুকড", userName: "ইউজার নেম", waNumber: "হোয়াটসঅ্যাপ নাম্বার", dateLbl: "তারিখ ও সময়",
+            moneySec: "টাকার হিসাব", viewSec: "ভিউ এর হিসাব", totalTk: "মোট টাকা", advTk: "অ্যাডভান্স", installTk: "কিস্তি", tkSuffix: "টাকা",
+            targetVw: "টার্গেট ভিউ", installVw: "দেওয়া ভিউ", vwSuffix: "ভিউ", remTk: "বাকি টাকা:", remVw: "বাকি ভিউ:",
+            saveBtn: "সেভ করুন", resetBtn: "রিসেট", bookedTitle: "বুক করা স্লটসমূহ:", noBooking: "কোনো বুকিং নেই",
+            globDueTxt: "বাকি টাকা:", globCompView: "দেওয়া ভিউ:", globDueView: "বাকি ভিউ:", modePremium: "Premium", modeNormal: "Normal"
         },
         en: {
-            search: "Search user or number...",
-            slot: "Slot", linkPlaceholder: "Add Link...", openBtn: "Open",
-            statusFree: "Free", statusBooked: "Booked",
-            userName: "User Name", waNumber: "WhatsApp Number", dateLbl: "Date",
-            moneySec: "Money Calculation", viewSec: "View Calculation",
-            totalTk: "Total", advTk: "Advance", installTk: "Inst.", tkSuffix: "TK",
-            targetVw: "Target", installVw: "Given", vwSuffix: "View",
-            remTk: "Due Money:", remVw: "Due View:",
-            saveBtn: "Save", resetBtn: "Reset",
-            bookedTitle: "Booked Slots:", noBooking: "No Bookings",
-            globDueTxt: "Grand Total Due", globCompView: "Total Given Views", globDueView: "Grand Remaining Views",
-            modePremium: "Premium", modeNormal: "Normal"
+            search: "Search...", slot: "Slot", linkPlaceholder: "Add Link...", openBtn: "Open",
+            statusFree: "Free", statusBooked: "Booked", userName: "User Name", waNumber: "WhatsApp Number", dateLbl: "Date & Time",
+            moneySec: "Money Calc", viewSec: "View Calc", totalTk: "Total", advTk: "Advance", installTk: "Inst.", tkSuffix: "TK",
+            targetVw: "Target", installVw: "Given", vwSuffix: "View", remTk: "Due Money:", remVw: "Due View:",
+            saveBtn: "Save", resetBtn: "Reset", bookedTitle: "Booked Slots:", noBooking: "No Bookings",
+            globDueTxt: "Due TK:", globCompView: "Given View:", globDueView: "Due View:", modePremium: "Premium", modeNormal: "Normal"
         }
     };
 
-    function generateId() { return Date.now().toString().slice(-6); } // Generate unique 6 digit ID
-    
-    function getActiveArray() { return currentMode === 'normal' ? normalSlots : premiumSlots; }
-    function saveActiveArray(arr) { 
-        if(currentMode === 'normal') localStorage.setItem('normalSlots', JSON.stringify(arr));
-        else localStorage.setItem('premiumSlots', JSON.stringify(arr));
-    }
+    function generateId() { return Date.now().toString().slice(-6); }
+    function getActiveArray() { return normalSlots; }
+    function saveActiveArray(arr) { localStorage.setItem('normalSlots', JSON.stringify(arr)); }
 
     function init() {
         applyTheme();
@@ -279,34 +302,20 @@
         updateUI();
     }
 
-    // Toggle Theme Mode
-    function toggleThemeMode() {
-        currentMode = currentMode === 'normal' ? 'premium' : 'normal';
-        localStorage.setItem('app_mode', currentMode);
-        
-        let arr = getActiveArray();
-        if(arr.length === 0) { arr.push(generateId()); saveActiveArray(arr); }
-
+    // Cycle Premium Theme Colors
+    function cycleThemeMode() {
+        colorIndex = (colorIndex + 1) % premiumColors.length;
+        localStorage.setItem('themeColorIndex', colorIndex);
         applyTheme();
-        renderAllSlots();
-        updateUI();
     }
 
     function applyTheme() {
-        if(currentMode === 'premium') {
-            document.body.classList.add('premium-theme');
-            document.querySelector('.lang-modeTxt').innerText = textDict[currentLang].modeNormal;
-            document.getElementById('modeBtn').innerHTML = `<i class="fas fa-layer-group"></i> <span class="lang-modeTxt">${textDict[currentLang].modeNormal}</span>`;
-            document.getElementById('modeBtn').style.background = '#334155';
-        } else {
-            document.body.classList.remove('premium-theme');
-            document.querySelector('.lang-modeTxt').innerText = textDict[currentLang].modePremium;
-            document.getElementById('modeBtn').innerHTML = `<i class="fas fa-crown"></i> <span class="lang-modeTxt">${textDict[currentLang].modePremium}</span>`;
-            document.getElementById('modeBtn').style.background = '#8b5cf6';
-        }
+        // Change accent color dynamically
+        document.documentElement.style.setProperty('--green-glow', premiumColors[colorIndex]);
+        // Visual button effect
+        document.getElementById('modeBtn').style.boxShadow = `0 0 15px ${premiumColors[colorIndex]}`;
     }
 
-    // Render Slots
     function renderAllSlots() {
         const container = document.getElementById('slotsContainer');
         container.innerHTML = '';
@@ -315,35 +324,36 @@
         activeArray.forEach((id, index) => {
             container.insertAdjacentHTML('beforeend', createSlotHTML(id, index + 1));
             loadSlotData(id);
+            lockSlotInputs(id, true); // Lock all by default
         });
         
         calcGlobalTotals();
         updateBookedList();
     }
 
-    // HTML Template for a Slot
+    // HTML Template (Added Password Delete, Timer, Edit Lock logic)
     function createSlotHTML(id, displayNum) {
         return `
         <div class="slot-card" id="card-${id}">
-            <button class="delete-slot-btn" onclick="deleteSlot('${id}')" title="স্লট ডিলিট করুন"><i class="fas fa-trash"></i></button>
+            <button class="delete-slot-btn" onclick="deleteSlot('${id}')" title="Delete"><i class="fas fa-trash"></i></button>
             
             <div class="cover-photo" onclick="document.getElementById('cover-upload-${id}').click()">
-                <div class="upload-hint">Cover Photo</div>
+                <div class="upload-hint" id="cover-hint-${id}">Cover Photo</div>
                 <img id="cover-img-${id}" src="" style="display:none;">
             </div>
-            <input type="file" id="cover-upload-${id}" accept="image/*" onchange="handleImg(event, 'cover', '${id}')">
+            <input type="file" id="cover-upload-${id}" accept="image/*" class="lockable" onchange="handleImg(event, 'cover', '${id}')">
 
             <div class="profile-photo" onclick="document.getElementById('profile-upload-${id}').click()">
-                <div class="upload-hint" style="font-size:0.6rem;">Profile</div>
+                <div class="upload-hint" id="profile-hint-${id}" style="font-size:0.6rem;">Profile</div>
                 <img id="profile-img-${id}" src="" style="display:none;">
             </div>
-            <input type="file" id="profile-upload-${id}" accept="image/*" onchange="handleImg(event, 'profile', '${id}')">
+            <input type="file" id="profile-upload-${id}" accept="image/*" class="lockable" onchange="handleImg(event, 'profile', '${id}')">
 
             <div class="card-body">
                 <div class="slot-header">
                     <div class="slot-title"><span class="lang-slot">Slot</span> ${displayNum}</div>
                     <div class="link-group">
-                        <input type="text" id="link-${id}" class="lang-linkPH" placeholder="লিংক দিন..." oninput="autoSave('${id}')">
+                        <input type="text" id="link-${id}" class="lang-linkPH lockable" placeholder="লিংক দিন..." oninput="autoSave('${id}')">
                         <button onclick="openLink('${id}')" class="lang-openBtn">Open</button>
                     </div>
                     <div class="status-badge" id="status-${id}" onclick="toggleStatus('${id}')">ফ্রি</div>
@@ -352,57 +362,58 @@
                 <div class="grid-half">
                     <div class="input-group">
                         <label class="lang-userName">ইউজার নেম</label>
-                        <input type="text" class="input-box" id="name-${id}" placeholder="..." oninput="autoSave('${id}')">
+                        <input type="text" class="input-box lockable" id="name-${id}" placeholder="..." oninput="autoSave('${id}')">
                     </div>
                     <div class="input-group">
-                        <label class="lang-dateLbl">তারিখ</label>
-                        <input type="date" class="input-box" id="date-${id}" oninput="autoSave('${id}')">
+                        <label class="lang-dateLbl">তারিখ ও সময়</label>
+                        <input type="datetime-local" class="input-box lockable" id="date-${id}" oninput="autoSave('${id}'); setupTimer('${id}')">
                     </div>
                 </div>
+                
+                <div id="timer-${id}" class="timer-display">00d 00h 00m 00s</div>
 
-                <div class="input-group">
+                <div class="input-group" style="margin-top: 10px;">
                     <label class="lang-waNumber">হোয়াটসঅ্যাপ নাম্বার</label>
                     <div class="wa-group">
-                        <input type="tel" class="input-box" id="wa-${id}" placeholder="017..." oninput="autoSave('${id}')">
+                        <input type="tel" class="input-box lockable" id="wa-${id}" placeholder="017..." oninput="autoSave('${id}')">
                         <button class="wa-btn" onclick="openWA('${id}')"><i class="fab fa-whatsapp"></i></button>
                     </div>
                 </div>
 
-                <div class="section-box">
+                <div class="section-box" style="margin-top: 15px;">
                     <div class="section-header">
                         <span class="lang-moneySec">টাকার হিসাব</span>
-                        <button class="add-field-btn" onclick="addField('${id}', 'm')"><i class="fas fa-plus"></i></button>
+                        <button class="add-field-btn lockable" onclick="addField('${id}', 'm')"><i class="fas fa-plus"></i></button>
                     </div>
                     <div class="grid-2">
                         <div class="suffix-input">
-                            <input type="number" id="t-money-${id}" class="lang-totalTk" placeholder="মোট টাকা" oninput="calcMoney('${id}')">
+                            <input type="number" id="t-money-${id}" class="lang-totalTk lockable" placeholder="মোট টাকা" oninput="calcMoney('${id}')">
                             <span class="suffix-text lang-tkSuffix">টাকা</span>
                         </div>
                         <div class="suffix-input">
-                            <input type="number" id="a-money-${id}" class="lang-advTk" placeholder="অ্যাডভান্স" oninput="calcMoney('${id}')">
+                            <input type="number" id="a-money-${id}" class="lang-advTk lockable" placeholder="অ্যাডভান্স" oninput="calcMoney('${id}')">
                             <span class="suffix-text lang-tkSuffix">টাকা</span>
                         </div>
                     </div>
-                    <div class="dynamic-grid" id="m-grid-${id}">
-                        </div>
+                    <div class="dynamic-grid" id="m-grid-${id}"></div>
                     <div class="live-track due"><span class="lang-remTk">বাকি টাকা:</span> <span id="due-money-${id}">0</span> ৳</div>
                 </div>
 
-                <div class="section-box">
+                <div class="section-box" style="margin-top: 15px;">
                     <div class="section-header">
                         <span class="lang-viewSec">ভিউ এর হিসাব</span>
-                        <button class="add-field-btn" onclick="addField('${id}', 'v')"><i class="fas fa-plus"></i></button>
+                        <button class="add-field-btn lockable" onclick="addField('${id}', 'v')"><i class="fas fa-plus"></i></button>
                     </div>
                     <div class="suffix-input" style="margin-bottom: 8px;">
-                        <input type="number" id="t-view-${id}" class="lang-targetVw" placeholder="টার্গেট ভিউ" oninput="calcView('${id}')">
+                        <input type="number" id="t-view-${id}" class="lang-targetVw lockable" placeholder="টার্গেট ভিউ" oninput="calcView('${id}')">
                         <span class="suffix-text lang-vwSuffix">ভিউ</span>
                     </div>
-                    <div class="dynamic-grid" id="v-grid-${id}">
-                         </div>
+                    <div class="dynamic-grid" id="v-grid-${id}"></div>
                     <div class="live-track"><span class="lang-remVw">বাকি ভিউ:</span> <span id="due-view-${id}">0</span></div>
                 </div>
 
                 <div class="action-btns">
+                    <button class="btn-edit" id="edit-btn-${id}" onclick="toggleEditMode('${id}')">✏️ Edit</button>
                     <button class="btn-save lang-saveBtn" onclick="manualSave('${id}')">সেভ করুন</button>
                     <button class="btn-reset lang-resetBtn" onclick="clearSlotData('${id}')">রিসেট</button>
                 </div>
@@ -411,7 +422,30 @@
         `;
     }
 
-    // Add dynamic field (+ button)
+    // Edit and Lock System
+    function lockSlotInputs(id, lockStatus) {
+        let card = document.getElementById(`card-${id}`);
+        if(!card) return;
+        let elements = card.querySelectorAll('.lockable');
+        elements.forEach(el => el.disabled = lockStatus);
+        
+        let editBtn = document.getElementById(`edit-btn-${id}`);
+        if(lockStatus) {
+            editBtn.classList.remove('active');
+            editBtn.innerHTML = "✏️ Edit";
+        } else {
+            editBtn.classList.add('active');
+            editBtn.innerHTML = "🔓 Editing...";
+        }
+    }
+
+    function toggleEditMode(id) {
+        let nameInput = document.getElementById(`name-${id}`);
+        let isCurrentlyLocked = nameInput.disabled;
+        lockSlotInputs(id, !isCurrentlyLocked); // Toggle state
+    }
+
+    // Dynamic Field Adder
     function addField(id, type, val = '') {
         const grid = document.getElementById(`${type}-grid-${id}`);
         let phClass = type === 'm' ? 'lang-installTk' : 'lang-installVw';
@@ -423,15 +457,20 @@
         let newField = document.createElement('div');
         newField.className = 'suffix-input';
         newField.innerHTML = `
-            <input type="number" class="${type}-input-${id} deletable-field ${phClass}" placeholder="${phText}" value="${val}" oninput="${calcFunc}">
-            <button class="del-field-btn" onclick="this.parentElement.remove(); ${calcFunc}; autoSave('${id}')" title="Delete"><i class="fas fa-times"></i></button>
+            <input type="number" class="${type}-input-${id} deletable-field ${phClass} lockable" placeholder="${phText}" value="${val}" oninput="${calcFunc}">
+            <button class="del-field-btn lockable" onclick="this.parentElement.remove(); ${calcFunc}; autoSave('${id}')" title="Delete"><i class="fas fa-times"></i></button>
             <span class="suffix-text ${suffixClass}">${suffixText}</span>
         `;
         grid.appendChild(newField);
+        
+        // Sync disable state with current card state
+        let isCardLocked = document.getElementById(`name-${id}`).disabled;
+        newField.querySelectorAll('.lockable').forEach(el => el.disabled = isCardLocked);
+
         if(val === '') autoSave(id);
     }
 
-    // Add New Slot
+    // Add & Delete Slot (With Password)
     function addNewSlot() {
         let arr = getActiveArray();
         let newId = generateId();
@@ -439,28 +478,25 @@
         saveActiveArray(arr);
         
         document.getElementById('slotsContainer').insertAdjacentHTML('beforeend', createSlotHTML(newId, arr.length));
-        
-        // Setup default 5 fields
         for(let i=0; i<5; i++) { addField(newId, 'm'); addField(newId, 'v'); }
+        lockSlotInputs(newId, true);
         
         updateUI();
         document.getElementById(`card-${newId}`).scrollIntoView({ behavior: 'smooth' });
     }
 
-    // Delete Slot
     function deleteSlot(id) {
-        if(confirm("আপনি কি নিশ্চিত এই সম্পূর্ণ স্লটটি মুছে ফেলতে চান?")) {
+        let pwd = prompt("স্লট ডিলিট করতে সিকিউরিটি পাসওয়ার্ড দিন (Hint: 1111):");
+        if(pwd === "1111") {
             let arr = getActiveArray().filter(s => s !== id);
             saveActiveArray(arr);
-            
             const card = document.getElementById(`card-${id}`);
             if(card) card.remove();
-
-            // Cleanup local storage
-            Object.keys(localStorage).forEach(key => {
-                if(key.startsWith(`slot_${id}_`)) localStorage.removeItem(key);
-            });
-            renderAllSlots(); // Re-render to update slot numbers
+            Object.keys(localStorage).forEach(key => { if(key.startsWith(`slot_${id}_`)) localStorage.removeItem(key); });
+            if(countdownTimers[id]) clearInterval(countdownTimers[id]);
+            renderAllSlots();
+        } else if(pwd !== null) {
+            alert("❌ ভুল পাসওয়ার্ড! ডিলিট করা সম্ভব নয়।");
         }
     }
 
@@ -470,7 +506,6 @@
         let adv = parseFloat(document.getElementById(`a-money-${id}`).value) || 0;
         let installSum = 0;
         document.querySelectorAll(`.m-input-${id}`).forEach(input => { installSum += (parseFloat(input.value) || 0); });
-
         document.getElementById(`due-money-${id}`).innerText = total - (adv + installSum);
         autoSave(id); calcGlobalTotals();
     }
@@ -479,19 +514,15 @@
         let target = parseFloat(document.getElementById(`t-view-${id}`).value) || 0;
         let installSum = 0;
         document.querySelectorAll(`.v-input-${id}`).forEach(input => { installSum += (parseFloat(input.value) || 0); });
-
         document.getElementById(`due-view-${id}`).innerText = target - installSum;
         autoSave(id); calcGlobalTotals();
     }
 
     function calcGlobalTotals() {
         let grandDueMoney = 0, grandCompViews = 0, grandDueViews = 0;
-        let arr = getActiveArray();
-        
-        arr.forEach(id => {
+        getActiveArray().forEach(id => {
             let mDueEl = document.getElementById(`due-money-${id}`);
             if(mDueEl) grandDueMoney += (parseFloat(mDueEl.innerText) || 0);
-
             let tViewEl = document.getElementById(`t-view-${id}`);
             let vDueEl = document.getElementById(`due-view-${id}`);
             if(tViewEl && vDueEl) {
@@ -501,10 +532,45 @@
                 grandCompViews += (target - due);
             }
         });
-
         document.getElementById('grandTotalDue').innerText = grandDueMoney;
         document.getElementById('grandCompletedViews').innerText = grandCompViews;
         document.getElementById('grandRemainingViews').innerText = grandDueViews;
+    }
+
+    // Countdown Timer Setup
+    function setupTimer(id) {
+        let dateInput = document.getElementById(`date-${id}`).value;
+        let display = document.getElementById(`timer-${id}`);
+        
+        if(!dateInput) {
+            display.style.display = 'none';
+            return;
+        }
+
+        let targetDate = new Date(dateInput).getTime();
+        display.style.display = 'block';
+        display.classList.remove('expired');
+
+        if(countdownTimers[id]) clearInterval(countdownTimers[id]);
+
+        countdownTimers[id] = setInterval(function() {
+            let now = new Date().getTime();
+            let distance = targetDate - now;
+
+            if (distance < 0) {
+                clearInterval(countdownTimers[id]);
+                display.innerHTML = "⚠️ TIME EXPIRED!";
+                display.classList.add('expired');
+                return;
+            }
+
+            let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            display.innerHTML = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }, 1000);
     }
 
     // Save & Load
@@ -513,49 +579,53 @@
         localStorage.setItem(`slot_${id}_name`, document.getElementById(`name-${id}`).value);
         localStorage.setItem(`slot_${id}_wa`, document.getElementById(`wa-${id}`).value);
         localStorage.setItem(`slot_${id}_date`, document.getElementById(`date-${id}`).value);
-        
         localStorage.setItem(`slot_${id}_tm`, document.getElementById(`t-money-${id}`).value);
         localStorage.setItem(`slot_${id}_am`, document.getElementById(`a-money-${id}`).value);
         localStorage.setItem(`slot_${id}_tv`, document.getElementById(`t-view-${id}`).value);
         
-        // Save Arrays for dynamic fields
         let mArr = Array.from(document.querySelectorAll(`.m-input-${id}`)).map(el => el.value);
         let vArr = Array.from(document.querySelectorAll(`.v-input-${id}`)).map(el => el.value);
         localStorage.setItem(`slot_${id}_mArr`, JSON.stringify(mArr));
         localStorage.setItem(`slot_${id}_vArr`, JSON.stringify(vArr));
-
         updateBookedList();
     }
 
-    function manualSave(id) { autoSave(id); alert(`সেভ হয়েছে! (Saved)`); }
+    function manualSave(id) { 
+        autoSave(id); 
+        lockSlotInputs(id, true); // Auto-lock after saving
+        alert(`ডাটা সেভ এবং লক করা হয়েছে!`); 
+    }
 
     function loadSlotData(id) {
         let cover = localStorage.getItem(`slot_${id}_cover`);
         let profile = localStorage.getItem(`slot_${id}_profile`);
-        if(cover) { document.getElementById(`cover-img-${id}`).src = cover; document.getElementById(`cover-img-${id}`).style.display = 'block'; }
-        if(profile) { document.getElementById(`profile-img-${id}`).src = profile; document.getElementById(`profile-img-${id}`).style.display = 'block'; }
+        if(cover) { 
+            document.getElementById(`cover-img-${id}`).src = cover; 
+            document.getElementById(`cover-img-${id}`).style.display = 'block'; 
+            document.getElementById(`cover-hint-${id}`).style.display = 'none'; // Hide text
+        }
+        if(profile) { 
+            document.getElementById(`profile-img-${id}`).src = profile; 
+            document.getElementById(`profile-img-${id}`).style.display = 'block'; 
+            document.getElementById(`profile-hint-${id}`).style.display = 'none'; // Hide text
+        }
 
         document.getElementById(`link-${id}`).value = localStorage.getItem(`slot_${id}_link`) || '';
         document.getElementById(`name-${id}`).value = localStorage.getItem(`slot_${id}_name`) || '';
         document.getElementById(`wa-${id}`).value = localStorage.getItem(`slot_${id}_wa`) || '';
         document.getElementById(`date-${id}`).value = localStorage.getItem(`slot_${id}_date`) || '';
-        
         document.getElementById(`t-money-${id}`).value = localStorage.getItem(`slot_${id}_tm`) || '';
         document.getElementById(`a-money-${id}`).value = localStorage.getItem(`slot_${id}_am`) || '';
         document.getElementById(`t-view-${id}`).value = localStorage.getItem(`slot_${id}_tv`) || '';
         
-        // Load Arrays for dynamic fields
         let mArr = JSON.parse(localStorage.getItem(`slot_${id}_mArr`));
         let vArr = JSON.parse(localStorage.getItem(`slot_${id}_vArr`));
         
         document.getElementById(`m-grid-${id}`).innerHTML = '';
         document.getElementById(`v-grid-${id}`).innerHTML = '';
         
-        if(!mArr) { for(let i=0; i<5; i++) addField(id, 'm'); } // Default 5
-        else { mArr.forEach(val => addField(id, 'm', val)); }
-
-        if(!vArr) { for(let i=0; i<5; i++) addField(id, 'v'); }
-        else { vArr.forEach(val => addField(id, 'v', val)); }
+        if(!mArr) { for(let i=0; i<5; i++) addField(id, 'm'); } else { mArr.forEach(val => addField(id, 'm', val)); }
+        if(!vArr) { for(let i=0; i<5; i++) addField(id, 'v'); } else { vArr.forEach(val => addField(id, 'v', val)); }
 
         let status = localStorage.getItem(`slot_${id}_status`) || 'free';
         if(status === 'booked') {
@@ -565,18 +635,26 @@
         }
 
         calcMoney(id); calcView(id);
+        setupTimer(id);
     }
 
     function clearSlotData(id) {
-        if(confirm("এই স্লটের ডাটা রিসেট করতে চান?")) {
+        if(confirm("এই স্লটের সম্পূর্ণ ডাটা মুছে ফেলতে চান?")) {
             let keys = ['cover','profile','link','name','wa','date','tm','am','tv','status','mArr','vArr'];
             keys.forEach(k => localStorage.removeItem(`slot_${id}_${k}`));
-            loadSlotData(id); // Reload default state
+            
+            // Reset image visibility
+            document.getElementById(`cover-img-${id}`).style.display = 'none';
+            document.getElementById(`cover-hint-${id}`).style.display = 'flex';
+            document.getElementById(`profile-img-${id}`).style.display = 'none';
+            document.getElementById(`profile-hint-${id}`).style.display = 'flex';
+
+            loadSlotData(id); 
             updateBookedList();
         }
     }
 
-    // Status / Booked List
+    // Status List Logic
     function toggleStatus(id) {
         let badge = document.getElementById(`status-${id}`);
         let isBooked = badge.classList.contains('booked');
@@ -594,10 +672,8 @@
 
     function updateBookedList() {
         let list = [];
-        let arr = getActiveArray();
-        arr.forEach(id => {
-            let status = localStorage.getItem(`slot_${id}_status`);
-            if(status === 'booked') {
+        getActiveArray().forEach(id => {
+            if(localStorage.getItem(`slot_${id}_status`) === 'booked') {
                 let name = document.getElementById(`name-${id}`).value.trim();
                 list.push({id: id, name: name || `Slot`});
             }
@@ -617,7 +693,7 @@
         }
     }
 
-    // Utils
+    // Image Upload Handler
     function handleImg(e, type, id) {
         let file = e.target.files[0];
         if(!file) return;
@@ -632,8 +708,11 @@
                 canvas.width = maxW; canvas.height = img.height * scale;
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                 let b64 = canvas.toDataURL('image/jpeg', 0.6);
+                
                 document.getElementById(`${type}-img-${id}`).src = b64;
                 document.getElementById(`${type}-img-${id}`).style.display = 'block';
+                document.getElementById(`${type}-hint-${id}`).style.display = 'none'; // Hide text
+
                 localStorage.setItem(`slot_${id}_${type}`, b64);
             }
             img.src = ev.target.result;
@@ -688,8 +767,6 @@
         document.querySelector('.lang-globDueTxt').innerText = d.globDueTxt;
         document.querySelector('.lang-globCompView').innerText = d.globCompView;
         document.querySelector('.lang-globDueView').innerText = d.globDueView;
-        
-        document.querySelector('.lang-modeTxt').innerText = currentMode === 'normal' ? d.modePremium : d.modeNormal;
 
         if(document.getElementById('bookedNamesDisplay').innerText === textDict[currentLang==='bn'?'en':'bn'].noBooking) {
             document.getElementById('bookedNamesDisplay').innerText = d.noBooking;
@@ -714,7 +791,6 @@
             
             document.querySelectorAll(`#card-${id} .lang-tkSuffix`).forEach(el => el.innerText = d.tkSuffix);
             document.querySelectorAll(`#card-${id} .lang-vwSuffix`).forEach(el => el.innerText = d.vwSuffix);
-            
             document.querySelectorAll(`#card-${id} .lang-installTk`).forEach(el => el.placeholder = d.installTk);
             document.querySelectorAll(`#card-${id} .lang-installVw`).forEach(el => el.placeholder = d.installVw);
             
@@ -723,10 +799,6 @@
             else badge.innerText = d.statusFree;
         });
     }
-
-    window.onload = init;
-
 </script>
-
 </body>
 </html>
