@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Tracker Pro Max</title>
+    <title>Ultimate Tracker Pro - Premium Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* ================= NORMAL THEME ================= */
         :root {
             --bg-dark: #0f172a;
             --card-bg: #1e293b;
@@ -16,556 +17,635 @@
             --green-glow: #4ade80;
             --btn-blue: #3b82f6;
             --btn-green: #22c55e;
+            --btn-red: #ef4444;
             --btn-dark: #334155;
             --wa-color: #25D366;
             --danger: #ef4444;
+            --shadow-color: rgba(0,0,0,0.5);
         }
+
+        /* ================= PREMIUM THEME ================= */
+        body.premium-theme {
+            --bg-dark: #050505;
+            --card-bg: #111111;
+            --input-bg: #1a1a1a;
+            --border-color: #b8860b; /* Golden Dark */
+            --text-main: #fcfcfc;
+            --text-muted: #aaaaaa;
+            --green-glow: #ffd700; /* Bright Gold */
+            --btn-blue: #444444;
+            --btn-green: linear-gradient(45deg, #b8860b, #ffd700);
+            --btn-red: #cc0000;
+            --btn-dark: #222222;
+            --wa-color: #d4af37; /* Muted Gold */
+            --danger: #ff4444;
+            --shadow-color: rgba(212, 175, 55, 0.2);
+        }
+        body.premium-theme .slot-card {
+            border: 2px solid var(--border-color);
+            box-shadow: 0 5px 20px var(--shadow-color);
+            background: linear-gradient(145deg, #111, #1a1a1a);
+        }
+        body.premium-theme .btn-save { color: #000; text-shadow: none; }
+        body.premium-theme .booked-chip { background: var(--btn-green); color: #000; }
+        body.premium-theme .add-slot-btn { background: rgba(255, 215, 0, 0.1); }
+        body.premium-theme .add-slot-btn:hover { background: rgba(255, 215, 0, 0.3); box-shadow: 0 0 15px var(--green-glow); }
+        body.premium-theme .mode-btn { background: var(--btn-green); color: black; box-shadow: 0 0 10px var(--green-glow); }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
-        body { 
-            background-color: var(--bg-dark); 
-            color: var(--text-main); 
-            padding: 15px; 
-            padding-top: 130px; /* Adjusted for top bars */
-            padding-bottom: 70px; /* Adjusted for bottom global due */
-        }
+        body { background-color: var(--bg-dark); color: var(--text-main); padding: 15px; padding-top: 130px; padding-bottom: 120px; transition: 0.4s ease; }
 
-        /* Top Bar (Search, Voice, Language) */
+        /* Top Navigation */
         .top-bar {
             position: fixed; top: 0; left: 0; right: 0; background: var(--card-bg);
             padding: 15px 20px; display: flex; gap: 10px; align-items: center; justify-content: center;
-            border-bottom: 1px solid var(--border-color); z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            border-bottom: 2px solid var(--border-color); z-index: 1000; box-shadow: 0 4px 10px var(--shadow-color);
+            transition: 0.4s ease;
         }
 
         .search-box {
             display: flex; background: var(--input-bg); border: 1px solid var(--border-color);
-            border-radius: 20px; overflow: hidden; flex: 1; max-width: 400px;
+            border-radius: 20px; overflow: hidden; flex: 1; max-width: 350px;
         }
 
-        .search-box input {
-            flex: 1; background: transparent; border: none; padding: 10px 15px;
-            color: white; outline: none;
-        }
-
-        .voice-btn, .lang-btn {
-            background: transparent; border: none; color: var(--text-muted);
-            padding: 10px 15px; cursor: pointer; transition: 0.2s; font-size: 1.1rem;
-        }
+        .search-box input { flex: 1; background: transparent; border: none; padding: 10px 15px; color: white; outline: none; }
+        .voice-btn, .lang-btn, .mode-btn { background: transparent; border: none; color: var(--text-muted); padding: 10px 15px; cursor: pointer; transition: 0.2s; font-size: 1.1rem; }
         .voice-btn:hover { color: var(--btn-blue); }
         .voice-recording { color: var(--danger) !important; animation: pulse 1s infinite; }
-
+        
         .lang-btn { background: var(--btn-dark); border-radius: 8px; color: white; font-weight: bold; font-size: 0.9rem;}
+        .mode-btn { background: #8b5cf6; border-radius: 8px; color: white; font-weight: bold; font-size: 0.9rem; border: 1px solid var(--border-color); display: flex; gap: 5px; align-items: center;}
 
-        /* Marquee for Booked Slots */
-        .booked-marquee {
-            position: fixed; top: 72px; left: 0; right: 0; background: var(--input-bg);
-            padding: 8px 15px; font-size: 0.9rem; color: var(--green-glow); font-weight: bold;
+        /* Booked List Marquee */
+        .booked-chips {
+            position: fixed; top: 72px; left: 0; right: 0; background: rgba(0, 0, 0, 0.5);
+            padding: 10px 15px; display: flex; gap: 10px; overflow-x: auto; white-space: nowrap;
             border-bottom: 1px solid var(--border-color); z-index: 999;
-            overflow: hidden; white-space: nowrap; display: flex; align-items: center;
         }
-        .marquee-title { margin-right: 15px; color: var(--text-main); font-size: 0.85rem; z-index: 10; background: var(--input-bg); padding-right: 10px;}
-        .marquee-content {
-            display: inline-block; padding-left: 100%;
-            animation: marquee 20s linear infinite;
-        }
-        @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
+        .booked-title { color: var(--text-main); font-size: 0.85rem; background: var(--card-bg); padding: 5px 10px; border-radius: 8px; font-weight: bold; position: sticky; left: 0; z-index: 10;}
+        .booked-chip { background: var(--btn-green); color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; display: flex; align-items: center; gap: 5px; cursor: pointer; }
 
-        /* Global Due Footer */
-        .global-due-footer {
-            position: fixed; bottom: 0; left: 0; right: 0; background: var(--danger);
-            color: white; text-align: center; padding: 15px; font-size: 1.2rem; font-weight: bold;
-            z-index: 1000; box-shadow: 0 -4px 10px rgba(0,0,0,0.5);
-            display: flex; justify-content: center; gap: 10px;
+        /* Global Stats Footer */
+        .global-stats-container {
+            position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg);
+            border-top: 2px solid var(--border-color); z-index: 1000; box-shadow: 0 -4px 15px var(--shadow-color);
+            padding: 15px; display: flex; flex-direction: column; gap: 10px; transition: 0.4s ease;
         }
+        .global-results-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center;}
+        .global-res-item { background: var(--input-bg); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); }
+        .global-res-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px;}
+        .global-res-value { font-size: 1.1rem; font-weight: bold;}
+        .val-red { color: var(--danger);} .val-green { color: var(--green-glow);}
+
+        /* Add Slot Button */
+        .add-slot-btn {
+            background: rgba(74, 222, 128, 0.15); color: var(--green-glow); border: 2px dashed var(--green-glow);
+            width: 50px; height: 50px; border-radius: 50%; font-size: 1.5rem; font-weight: bold;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            margin: 0 auto; transition: 0.3s;
+        }
+        .add-slot-btn:hover { transform: scale(1.1);}
 
         /* Slots Grid */
-        .slots-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
+        .slots-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 25px; max-width: 1400px; margin: 0 auto; }
 
         /* Card Design */
         .slot-card {
             background-color: var(--card-bg); border: 2px solid var(--green-glow);
-            border-radius: 12px; overflow: hidden; position: relative;
-            display: flex; flex-direction: column;
+            border-radius: 12px; overflow: hidden; position: relative; display: flex; flex-direction: column;
+            transition: 0.4s ease;
         }
+        .delete-slot-btn {
+            position: absolute; top: 10px; right: 10px; background: rgba(239, 68, 68, 0.8); color: white;
+            border: none; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; z-index: 20;
+            display: flex; align-items: center; justify-content: center; transition: 0.2s;
+        }
+        .delete-slot-btn:hover { background: var(--btn-red); }
 
-        .cover-photo {
-            width: 100%; height: 120px; background-color: #333; cursor: pointer;
-            position: relative; border-bottom: 2px solid var(--border-color);
-        }
+        .cover-photo { width: 100%; height: 120px; background-color: #333; cursor: pointer; position: relative; border-bottom: 2px solid var(--border-color); }
         .cover-photo img { width: 100%; height: 100%; object-fit: cover; }
         .upload-hint { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); font-size: 0.8rem; pointer-events: none;}
-
         .profile-photo {
             width: 70px; height: 70px; border-radius: 50%; background-color: #222;
-            border: 3px solid var(--card-bg); position: absolute; top: 85px; left: 15px;
-            cursor: pointer; overflow: hidden; z-index: 10;
+            border: 3px solid var(--card-bg); position: absolute; top: 85px; left: 15px; cursor: pointer; overflow: hidden; z-index: 10;
         }
         .profile-photo img { width: 100%; height: 100%; object-fit: cover; }
 
         .card-body { padding: 15px; padding-top: 45px; display: flex; flex-direction: column; gap: 12px; }
 
-        /* Slot Header Row */
         .slot-header { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
         .slot-title { font-size: 1.2rem; font-weight: bold; }
         .link-group { display: flex; flex: 1; background: var(--input-bg); border-radius: 6px; overflow: hidden; border: 1px solid var(--border-color); }
         .link-group input { background: transparent; border: none; padding: 6px 10px; color: white; width: 100%; outline: none; }
         .link-group button { background: var(--btn-blue); border: none; color: white; padding: 0 12px; cursor: pointer; font-size: 0.8rem; }
+        
         .status-badge { background: var(--btn-dark); color: var(--green-glow); padding: 5px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; cursor: pointer; }
         .status-badge.booked { color: var(--danger); }
 
-        /* Form Inputs */
+        .grid-half { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .input-group { display: flex; flex-direction: column; gap: 5px; }
-        .input-group label { font-size: 0.85rem; color: var(--text-muted); }
-        .input-box { background: var(--input-bg); border: 1px solid var(--border-color); padding: 8px 10px; border-radius: 6px; color: white; width: 100%; outline: none; font-size: 0.85rem;}
+        .input-group label { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+        .input-box { background: var(--input-bg); border: 1px solid var(--border-color); padding: 8px 10px; border-radius: 6px; color: white; width: 100%; outline: none; font-size: 0.85rem; color-scheme: dark;}
         .input-box:focus { border-color: var(--green-glow); }
 
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
-        
-        .section-box { border: 1px dashed var(--border-color); padding: 10px; border-radius: 8px; background: rgba(0,0,0,0.1); }
-
-        /* WhatsApp Section */
         .wa-group { display: flex; gap: 10px; }
         .wa-btn { background: var(--wa-color); border: none; color: white; width: 40px; border-radius: 6px; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
 
-        /* Live Tracker Text */
-        .live-track { font-size: 0.85rem; color: var(--green-glow); text-align: right; font-weight: bold; margin-top: 5px;}
+        /* Custom Suffix Input */
+        .suffix-input { position: relative; display: flex; align-items: center; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden;}
+        .suffix-input input { flex: 1; background: transparent; border: none; padding: 8px 10px; padding-right: 45px; color: white; outline: none; font-size: 0.85rem; width: 100%;}
+        .suffix-input input:focus { background: rgba(74, 222, 128, 0.05); }
+        .suffix-text { position: absolute; right: 10px; font-size: 0.75rem; color: var(--green-glow); font-weight: bold; pointer-events: none; opacity: 0.7; }
+        
+        /* Input with Delete Button */
+        .deletable-field { padding-right: 70px !important; }
+        .del-field-btn { position: absolute; right: 40px; background: rgba(239, 68, 68, 0.2); color: var(--danger); border: none; height: 100%; width: 25px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
+        .del-field-btn:hover { background: var(--danger); color: white; }
+
+        /* Section Boxes */
+        .section-box { border: 1px dashed var(--border-color); padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.2); position: relative;}
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 0.9rem; font-weight: bold; color: var(--text-muted);}
+        
+        .add-field-btn {
+            background: rgba(74, 222, 128, 0.2); color: var(--green-glow); border: none;
+            width: 24px; height: 24px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; transition: 0.2s;
+        }
+        .add-field-btn:hover { background: var(--green-glow); color: var(--bg-dark); }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px;}
+        .dynamic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
+
+        .live-track { font-size: 0.9rem; color: var(--green-glow); text-align: right; font-weight: bold; margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 8px;}
         .live-track.due { color: var(--danger); }
 
-        /* Bottom Buttons */
         .action-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 5px; }
-        .btn-save { background: var(--btn-green); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .btn-book { background: var(--btn-dark); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .btn-save { background: var(--btn-green); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s;}
+        .btn-reset { background: var(--btn-dark); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s;}
 
         input[type="file"] { display: none; }
-        input[type="number"]::-webkit-inner-spin-button, 
-        input[type="number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-
+        input[type="number"]::-webkit-inner-spin-button, input[type="number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
 
     <div class="top-bar">
+        <button class="mode-btn" id="modeBtn" onclick="toggleThemeMode()">
+            <i class="fas fa-crown"></i> <span class="lang-modeTxt">Premium</span>
+        </button>
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder="ইউজার বা নাম্বার খুঁজুন..." onkeyup="searchSlots()">
+            <input type="text" id="searchInput" placeholder="খুঁজুন..." onkeyup="searchSlots()">
             <button class="voice-btn" id="voiceBtn" onclick="startVoiceSearch()"><i class="fas fa-microphone"></i></button>
         </div>
         <button class="lang-btn" id="langToggle" onclick="toggleLanguage()">EN</button>
     </div>
 
-    <div class="booked-marquee">
-        <span class="marquee-title lang-bookedTitle">বুক করা স্লটসমূহ:</span>
-        <div class="marquee-content" id="bookedNamesDisplay">কোনো বুকিং নেই</div>
+    <div class="booked-chips">
+        <span class="booked-title lang-bookedTitle">বুক করা স্লটসমূহ:</span>
+        <div id="bookedNamesDisplay" style="display: flex; gap: 10px;">কোনো বুকিং নেই</div>
     </div>
 
     <div class="slots-container" id="slotsContainer">
         </div>
 
-    <div class="global-due-footer">
-        <span class="lang-globalDue">সর্বমোট বাকি টাকা:</span> 
-        <span id="globalDueText">0</span> ৳
+    <div class="global-stats-container">
+        <div class="global-results-grid">
+            <div class="global-res-item">
+                <div class="global-res-label lang-globDueTxt">সর্বমোট বাকি টাকা</div>
+                <div class="global-res-value val-red"><span id="grandTotalDue">0</span> ৳</div>
+            </div>
+            <div class="global-res-item">
+                <div class="global-res-label lang-globCompView">মোট দেওয়া ভিউ</div>
+                <div class="global-res-value val-green"><span id="grandCompletedViews">0</span></div>
+            </div>
+            <div class="global-res-item">
+                <div class="global-res-label lang-globDueView">মোট বাকি ভিউ</div>
+                <div class="global-res-value val-red"><span id="grandRemainingViews">0</span></div>
+            </div>
+        </div>
+        <button class="add-slot-btn" onclick="addNewSlot()"><i class="fas fa-plus"></i></button>
     </div>
 
 <script>
-    const TOTAL_SLOTS = 15; // আপনি চাইলে এখানে স্লট সংখ্যা বাড়াতে পারেন
+    // State Variables
+    let currentMode = localStorage.getItem('app_mode') || 'normal';
+    let normalSlots = JSON.parse(localStorage.getItem('normalSlots')) || [generateId()];
+    let premiumSlots = JSON.parse(localStorage.getItem('premiumSlots')) || [];
     let currentLang = 'bn';
 
     const textDict = {
         bn: {
             search: "ইউজার বা নাম্বার খুঁজুন...",
-            slot: "Slot",
-            linkPlaceholder: "Add Link...",
-            saveBtnSmall: "Save",
-            statusFree: "ফ্রি",
-            statusBooked: "বুক",
-            userName: "ইউজার নেম",
-            waNumber: "হোয়াটসঅ্যাপ নাম্বার",
-            totalMoney: "মোট টাকা",
-            advance: "অ্যাডভান্স পেমেন্ট",
-            payInstalls: "টাকা দেওয়া (৫ কিস্তি)",
-            dueMoney: "বাকি টাকা",
-            targetView: "টার্গেট ভিউ",
-            viewInstalls: "দেওয়া ভিউ (৫ কিস্তি)",
-            remainingView: "বাকি ভিউ",
-            saveBtn: "সেভ",
-            resetBtn: "রিসেট",
-            bookedTitle: "বুক করা স্লটসমূহ:",
-            globalDue: "সর্বমোট বাকি টাকা:"
+            slot: "স্লট", linkPlaceholder: "লিংক দিন...", openBtn: "Open",
+            statusFree: "ফ্রি", statusBooked: "বুকড",
+            userName: "ইউজার নেম", waNumber: "হোয়াটসঅ্যাপ নাম্বার", dateLbl: "তারিখ",
+            moneySec: "টাকার হিসাব", viewSec: "ভিউ এর হিসাব",
+            totalTk: "মোট টাকা", advTk: "অ্যাডভান্স", installTk: "কিস্তি", tkSuffix: "টাকা",
+            targetVw: "টার্গেট ভিউ", installVw: "দেওয়া ভিউ", vwSuffix: "ভিউ",
+            remTk: "বাকি টাকা:", remVw: "বাকি ভিউ:",
+            saveBtn: "সেভ করুন", resetBtn: "রিসেট",
+            bookedTitle: "বুক করা স্লটসমূহ:", noBooking: "কোনো বুকিং নেই",
+            globDueTxt: "সর্বমোট বাকি টাকা", globCompView: "মোট দেওয়া ভিউ", globDueView: "মোট বাকি ভিউ",
+            modePremium: "Premium", modeNormal: "Normal"
         },
         en: {
             search: "Search user or number...",
-            slot: "Slot",
-            linkPlaceholder: "Add Link...",
-            saveBtnSmall: "Save",
-            statusFree: "Free",
-            statusBooked: "Booked",
-            userName: "User Name",
-            waNumber: "WhatsApp Number",
-            totalMoney: "Total Money",
-            advance: "Advance Payment",
-            payInstalls: "Payments (5 parts)",
-            dueMoney: "Due Money",
-            targetView: "Target View",
-            viewInstalls: "Given Views (5 parts)",
-            remainingView: "Remaining View",
-            saveBtn: "Save",
-            resetBtn: "Reset",
-            bookedTitle: "Booked Slots:",
-            globalDue: "Grand Total Due:"
+            slot: "Slot", linkPlaceholder: "Add Link...", openBtn: "Open",
+            statusFree: "Free", statusBooked: "Booked",
+            userName: "User Name", waNumber: "WhatsApp Number", dateLbl: "Date",
+            moneySec: "Money Calculation", viewSec: "View Calculation",
+            totalTk: "Total", advTk: "Advance", installTk: "Inst.", tkSuffix: "TK",
+            targetVw: "Target", installVw: "Given", vwSuffix: "View",
+            remTk: "Due Money:", remVw: "Due View:",
+            saveBtn: "Save", resetBtn: "Reset",
+            bookedTitle: "Booked Slots:", noBooking: "No Bookings",
+            globDueTxt: "Grand Total Due", globCompView: "Total Given Views", globDueView: "Grand Remaining Views",
+            modePremium: "Premium", modeNormal: "Normal"
         }
     };
 
-    function init() {
-        const container = document.getElementById('slotsContainer');
-        container.innerHTML = '';
-        for (let i = 1; i <= TOTAL_SLOTS; i++) {
-            container.innerHTML += createSlotHTML(i);
-        }
-        for (let i = 1; i <= TOTAL_SLOTS; i++) {
-            loadData(i);
-        }
-        updateLanguageUI();
-        updateBookedNames();
-        updateGlobalDue();
+    function generateId() { return Date.now().toString().slice(-6); } // Generate unique 6 digit ID
+    
+    function getActiveArray() { return currentMode === 'normal' ? normalSlots : premiumSlots; }
+    function saveActiveArray(arr) { 
+        if(currentMode === 'normal') localStorage.setItem('normalSlots', JSON.stringify(arr));
+        else localStorage.setItem('premiumSlots', JSON.stringify(arr));
     }
 
-    function createSlotHTML(id) {
+    function init() {
+        applyTheme();
+        renderAllSlots();
+        updateUI();
+    }
+
+    // Toggle Theme Mode
+    function toggleThemeMode() {
+        currentMode = currentMode === 'normal' ? 'premium' : 'normal';
+        localStorage.setItem('app_mode', currentMode);
+        
+        let arr = getActiveArray();
+        if(arr.length === 0) { arr.push(generateId()); saveActiveArray(arr); }
+
+        applyTheme();
+        renderAllSlots();
+        updateUI();
+    }
+
+    function applyTheme() {
+        if(currentMode === 'premium') {
+            document.body.classList.add('premium-theme');
+            document.querySelector('.lang-modeTxt').innerText = textDict[currentLang].modeNormal;
+            document.getElementById('modeBtn').innerHTML = `<i class="fas fa-layer-group"></i> <span class="lang-modeTxt">${textDict[currentLang].modeNormal}</span>`;
+            document.getElementById('modeBtn').style.background = '#334155';
+        } else {
+            document.body.classList.remove('premium-theme');
+            document.querySelector('.lang-modeTxt').innerText = textDict[currentLang].modePremium;
+            document.getElementById('modeBtn').innerHTML = `<i class="fas fa-crown"></i> <span class="lang-modeTxt">${textDict[currentLang].modePremium}</span>`;
+            document.getElementById('modeBtn').style.background = '#8b5cf6';
+        }
+    }
+
+    // Render Slots
+    function renderAllSlots() {
+        const container = document.getElementById('slotsContainer');
+        container.innerHTML = '';
+        let activeArray = getActiveArray();
+        
+        activeArray.forEach((id, index) => {
+            container.insertAdjacentHTML('beforeend', createSlotHTML(id, index + 1));
+            loadSlotData(id);
+        });
+        
+        calcGlobalTotals();
+        updateBookedList();
+    }
+
+    // HTML Template for a Slot
+    function createSlotHTML(id, displayNum) {
         return `
         <div class="slot-card" id="card-${id}">
+            <button class="delete-slot-btn" onclick="deleteSlot('${id}')" title="স্লট ডিলিট করুন"><i class="fas fa-trash"></i></button>
+            
             <div class="cover-photo" onclick="document.getElementById('cover-upload-${id}').click()">
                 <div class="upload-hint">Cover Photo</div>
                 <img id="cover-img-${id}" src="" style="display:none;">
             </div>
-            <input type="file" id="cover-upload-${id}" accept="image/*" onchange="handleImage(event, 'cover', ${id})">
+            <input type="file" id="cover-upload-${id}" accept="image/*" onchange="handleImg(event, 'cover', '${id}')">
 
             <div class="profile-photo" onclick="document.getElementById('profile-upload-${id}').click()">
                 <div class="upload-hint" style="font-size:0.6rem;">Profile</div>
                 <img id="profile-img-${id}" src="" style="display:none;">
             </div>
-            <input type="file" id="profile-upload-${id}" accept="image/*" onchange="handleImage(event, 'profile', ${id})">
+            <input type="file" id="profile-upload-${id}" accept="image/*" onchange="handleImg(event, 'profile', '${id}')">
 
             <div class="card-body">
                 <div class="slot-header">
-                    <div class="slot-title"><span class="lang-slot">Slot</span> ${id}</div>
+                    <div class="slot-title"><span class="lang-slot">Slot</span> ${displayNum}</div>
                     <div class="link-group">
-                        <input type="text" id="link-${id}" class="lang-linkPlaceholder" placeholder="Add Link..." oninput="autoSave(${id})">
-                        <button onclick="openLink(${id})" class="lang-saveBtnSmall">Open</button>
+                        <input type="text" id="link-${id}" class="lang-linkPH" placeholder="লিংক দিন..." oninput="autoSave('${id}')">
+                        <button onclick="openLink('${id}')" class="lang-openBtn">Open</button>
                     </div>
-                    <div class="status-badge" id="status-${id}" onclick="toggleStatus(${id})">ফ্রি</div>
+                    <div class="status-badge" id="status-${id}" onclick="toggleStatus('${id}')">ফ্রি</div>
                 </div>
 
-                <div class="input-group">
-                    <label class="lang-userName">ইউজার নেম</label>
-                    <input type="text" class="input-box" id="name-${id}" placeholder="..." oninput="autoSave(${id})">
+                <div class="grid-half">
+                    <div class="input-group">
+                        <label class="lang-userName">ইউজার নেম</label>
+                        <input type="text" class="input-box" id="name-${id}" placeholder="..." oninput="autoSave('${id}')">
+                    </div>
+                    <div class="input-group">
+                        <label class="lang-dateLbl">তারিখ</label>
+                        <input type="date" class="input-box" id="date-${id}" oninput="autoSave('${id}')">
+                    </div>
                 </div>
 
                 <div class="input-group">
                     <label class="lang-waNumber">হোয়াটসঅ্যাপ নাম্বার</label>
                     <div class="wa-group">
-                        <input type="tel" class="input-box" id="wa-${id}" placeholder="017..." oninput="autoSave(${id})">
-                        <button class="wa-btn" onclick="openWA(${id})"><i class="fab fa-whatsapp"></i></button>
+                        <input type="tel" class="input-box" id="wa-${id}" placeholder="017..." oninput="autoSave('${id}')">
+                        <button class="wa-btn" onclick="openWA('${id}')"><i class="fab fa-whatsapp"></i></button>
                     </div>
                 </div>
 
                 <div class="section-box">
+                    <div class="section-header">
+                        <span class="lang-moneySec">টাকার হিসাব</span>
+                        <button class="add-field-btn" onclick="addField('${id}', 'm')"><i class="fas fa-plus"></i></button>
+                    </div>
                     <div class="grid-2">
-                        <div class="input-group">
-                            <label class="lang-totalMoney">মোট টাকা</label>
-                            <input type="number" class="input-box" id="t-money-${id}" placeholder="0" oninput="calcMoney(${id})">
+                        <div class="suffix-input">
+                            <input type="number" id="t-money-${id}" class="lang-totalTk" placeholder="মোট টাকা" oninput="calcMoney('${id}')">
+                            <span class="suffix-text lang-tkSuffix">টাকা</span>
                         </div>
-                        <div class="input-group">
-                            <label class="lang-advance">অ্যাডভান্স পেমেন্ট</label>
-                            <input type="number" class="input-box" id="a-money-${id}" placeholder="0" oninput="calcMoney(${id})">
-                        </div>
-                    </div>
-                    <div class="input-group" style="margin-top: 8px;">
-                        <label class="lang-payInstalls">টাকা দেওয়া (৫ কিস্তি)</label>
-                        <div class="grid-5">
-                            <input type="number" class="input-box" id="pm-1-${id}" placeholder="১" oninput="calcMoney(${id})">
-                            <input type="number" class="input-box" id="pm-2-${id}" placeholder="২" oninput="calcMoney(${id})">
-                            <input type="number" class="input-box" id="pm-3-${id}" placeholder="৩" oninput="calcMoney(${id})">
-                            <input type="number" class="input-box" id="pm-4-${id}" placeholder="৪" oninput="calcMoney(${id})">
-                            <input type="number" class="input-box" id="pm-5-${id}" placeholder="৫" oninput="calcMoney(${id})">
+                        <div class="suffix-input">
+                            <input type="number" id="a-money-${id}" class="lang-advTk" placeholder="অ্যাডভান্স" oninput="calcMoney('${id}')">
+                            <span class="suffix-text lang-tkSuffix">টাকা</span>
                         </div>
                     </div>
-                    <div class="live-track due"><span class="lang-dueMoney">বাকি টাকা</span>: <span id="due-money-${id}">0</span></div>
+                    <div class="dynamic-grid" id="m-grid-${id}">
+                        </div>
+                    <div class="live-track due"><span class="lang-remTk">বাকি টাকা:</span> <span id="due-money-${id}">0</span> ৳</div>
                 </div>
 
                 <div class="section-box">
-                    <div class="input-group">
-                        <label class="lang-targetView">টার্গেট ভিউ</label>
-                        <input type="number" class="input-box" id="t-view-${id}" placeholder="0" oninput="calcView(${id})">
+                    <div class="section-header">
+                        <span class="lang-viewSec">ভিউ এর হিসাব</span>
+                        <button class="add-field-btn" onclick="addField('${id}', 'v')"><i class="fas fa-plus"></i></button>
                     </div>
-                    <div class="input-group" style="margin-top: 8px;">
-                        <label class="lang-viewInstalls">দেওয়া ভিউ (৫ কিস্তি)</label>
-                        <div class="grid-5">
-                            <input type="number" class="input-box" id="gv-1-${id}" placeholder="১" oninput="calcView(${id})">
-                            <input type="number" class="input-box" id="gv-2-${id}" placeholder="২" oninput="calcView(${id})">
-                            <input type="number" class="input-box" id="gv-3-${id}" placeholder="৩" oninput="calcView(${id})">
-                            <input type="number" class="input-box" id="gv-4-${id}" placeholder="৪" oninput="calcView(${id})">
-                            <input type="number" class="input-box" id="gv-5-${id}" placeholder="৫" oninput="calcView(${id})">
-                        </div>
+                    <div class="suffix-input" style="margin-bottom: 8px;">
+                        <input type="number" id="t-view-${id}" class="lang-targetVw" placeholder="টার্গেট ভিউ" oninput="calcView('${id}')">
+                        <span class="suffix-text lang-vwSuffix">ভিউ</span>
                     </div>
-                    <div class="live-track"><span class="lang-remainingView">বাকি ভিউ</span>: <span id="due-view-${id}">0</span></div>
+                    <div class="dynamic-grid" id="v-grid-${id}">
+                         </div>
+                    <div class="live-track"><span class="lang-remVw">বাকি ভিউ:</span> <span id="due-view-${id}">0</span></div>
                 </div>
 
                 <div class="action-btns">
-                    <button class="btn-save lang-saveBtn" onclick="manualSave(${id})">সেভ</button>
-                    <button class="btn-book lang-resetBtn" onclick="clearSlot(${id})">রিসেট</button>
+                    <button class="btn-save lang-saveBtn" onclick="manualSave('${id}')">সেভ করুন</button>
+                    <button class="btn-reset lang-resetBtn" onclick="clearSlotData('${id}')">রিসেট</button>
                 </div>
             </div>
         </div>
         `;
     }
 
+    // Add dynamic field (+ button)
+    function addField(id, type, val = '') {
+        const grid = document.getElementById(`${type}-grid-${id}`);
+        let phClass = type === 'm' ? 'lang-installTk' : 'lang-installVw';
+        let phText = type === 'm' ? textDict[currentLang].installTk : textDict[currentLang].installVw;
+        let suffixClass = type === 'm' ? 'lang-tkSuffix' : 'lang-vwSuffix';
+        let suffixText = type === 'm' ? textDict[currentLang].tkSuffix : textDict[currentLang].vwSuffix;
+        let calcFunc = type === 'm' ? `calcMoney('${id}')` : `calcView('${id}')`;
+
+        let newField = document.createElement('div');
+        newField.className = 'suffix-input';
+        newField.innerHTML = `
+            <input type="number" class="${type}-input-${id} deletable-field ${phClass}" placeholder="${phText}" value="${val}" oninput="${calcFunc}">
+            <button class="del-field-btn" onclick="this.parentElement.remove(); ${calcFunc}; autoSave('${id}')" title="Delete"><i class="fas fa-times"></i></button>
+            <span class="suffix-text ${suffixClass}">${suffixText}</span>
+        `;
+        grid.appendChild(newField);
+        if(val === '') autoSave(id);
+    }
+
+    // Add New Slot
+    function addNewSlot() {
+        let arr = getActiveArray();
+        let newId = generateId();
+        arr.push(newId);
+        saveActiveArray(arr);
+        
+        document.getElementById('slotsContainer').insertAdjacentHTML('beforeend', createSlotHTML(newId, arr.length));
+        
+        // Setup default 5 fields
+        for(let i=0; i<5; i++) { addField(newId, 'm'); addField(newId, 'v'); }
+        
+        updateUI();
+        document.getElementById(`card-${newId}`).scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Delete Slot
+    function deleteSlot(id) {
+        if(confirm("আপনি কি নিশ্চিত এই সম্পূর্ণ স্লটটি মুছে ফেলতে চান?")) {
+            let arr = getActiveArray().filter(s => s !== id);
+            saveActiveArray(arr);
+            
+            const card = document.getElementById(`card-${id}`);
+            if(card) card.remove();
+
+            // Cleanup local storage
+            Object.keys(localStorage).forEach(key => {
+                if(key.startsWith(`slot_${id}_`)) localStorage.removeItem(key);
+            });
+            renderAllSlots(); // Re-render to update slot numbers
+        }
+    }
+
     // Calculations
     function calcMoney(id) {
         let total = parseFloat(document.getElementById(`t-money-${id}`).value) || 0;
-        let advance = parseFloat(document.getElementById(`a-money-${id}`).value) || 0;
-        let p1 = parseFloat(document.getElementById(`pm-1-${id}`).value) || 0;
-        let p2 = parseFloat(document.getElementById(`pm-2-${id}`).value) || 0;
-        let p3 = parseFloat(document.getElementById(`pm-3-${id}`).value) || 0;
-        let p4 = parseFloat(document.getElementById(`pm-4-${id}`).value) || 0;
-        let p5 = parseFloat(document.getElementById(`pm-5-${id}`).value) || 0;
+        let adv = parseFloat(document.getElementById(`a-money-${id}`).value) || 0;
+        let installSum = 0;
+        document.querySelectorAll(`.m-input-${id}`).forEach(input => { installSum += (parseFloat(input.value) || 0); });
 
-        let paid = advance + p1 + p2 + p3 + p4 + p5;
-        let due = total - paid;
-        document.getElementById(`due-money-${id}`).innerText = due;
-
-        updateGlobalDue();
-        autoSave(id);
+        document.getElementById(`due-money-${id}`).innerText = total - (adv + installSum);
+        autoSave(id); calcGlobalTotals();
     }
 
     function calcView(id) {
         let target = parseFloat(document.getElementById(`t-view-${id}`).value) || 0;
-        let v1 = parseFloat(document.getElementById(`gv-1-${id}`).value) || 0;
-        let v2 = parseFloat(document.getElementById(`gv-2-${id}`).value) || 0;
-        let v3 = parseFloat(document.getElementById(`gv-3-${id}`).value) || 0;
-        let v4 = parseFloat(document.getElementById(`gv-4-${id}`).value) || 0;
-        let v5 = parseFloat(document.getElementById(`gv-5-${id}`).value) || 0;
+        let installSum = 0;
+        document.querySelectorAll(`.v-input-${id}`).forEach(input => { installSum += (parseFloat(input.value) || 0); });
 
-        let given = v1 + v2 + v3 + v4 + v5;
-        let due = target - given;
-        document.getElementById(`due-view-${id}`).innerText = due;
-
-        autoSave(id);
+        document.getElementById(`due-view-${id}`).innerText = target - installSum;
+        autoSave(id); calcGlobalTotals();
     }
 
-    // Global Updates
-    function updateGlobalDue() {
-        let grandTotal = 0;
-        for(let i=1; i<=TOTAL_SLOTS; i++) {
-            let el = document.getElementById(`due-money-${i}`);
-            if(el) {
-                grandTotal += parseFloat(el.innerText) || 0;
+    function calcGlobalTotals() {
+        let grandDueMoney = 0, grandCompViews = 0, grandDueViews = 0;
+        let arr = getActiveArray();
+        
+        arr.forEach(id => {
+            let mDueEl = document.getElementById(`due-money-${id}`);
+            if(mDueEl) grandDueMoney += (parseFloat(mDueEl.innerText) || 0);
+
+            let tViewEl = document.getElementById(`t-view-${id}`);
+            let vDueEl = document.getElementById(`due-view-${id}`);
+            if(tViewEl && vDueEl) {
+                let target = parseFloat(tViewEl.value) || 0;
+                let due = parseFloat(vDueEl.innerText) || 0;
+                grandDueViews += due;
+                grandCompViews += (target - due);
             }
-        }
-        document.getElementById('globalDueText').innerText = grandTotal;
+        });
+
+        document.getElementById('grandTotalDue').innerText = grandDueMoney;
+        document.getElementById('grandCompletedViews').innerText = grandCompViews;
+        document.getElementById('grandRemainingViews').innerText = grandDueViews;
     }
 
-    function updateBookedNames() {
-        let bookedList = [];
-        for(let i=1; i<=TOTAL_SLOTS; i++) {
-            let status = localStorage.getItem(`slot_${i}_status`) || 'free';
-            if(status === 'booked') {
-                let name = document.getElementById(`name-${i}`).value.trim();
-                bookedList.push(name ? name : `Slot ${i}`);
-            }
-        }
-        let str = bookedList.length > 0 ? bookedList.join(' 🟢 ') : "কোনো বুকিং নেই";
-        document.getElementById('bookedNamesDisplay').innerText = str;
-    }
-
-    // Storage Management
+    // Save & Load
     function autoSave(id) {
         localStorage.setItem(`slot_${id}_link`, document.getElementById(`link-${id}`).value);
         localStorage.setItem(`slot_${id}_name`, document.getElementById(`name-${id}`).value);
         localStorage.setItem(`slot_${id}_wa`, document.getElementById(`wa-${id}`).value);
+        localStorage.setItem(`slot_${id}_date`, document.getElementById(`date-${id}`).value);
         
         localStorage.setItem(`slot_${id}_tm`, document.getElementById(`t-money-${id}`).value);
         localStorage.setItem(`slot_${id}_am`, document.getElementById(`a-money-${id}`).value);
-        for(let j=1; j<=5; j++) localStorage.setItem(`slot_${id}_pm${j}`, document.getElementById(`pm-${j}-${id}`).value);
-        
         localStorage.setItem(`slot_${id}_tv`, document.getElementById(`t-view-${id}`).value);
-        for(let j=1; j<=5; j++) localStorage.setItem(`slot_${id}_gv${j}`, document.getElementById(`gv-${j}-${id}`).value);
         
-        updateBookedNames();
+        // Save Arrays for dynamic fields
+        let mArr = Array.from(document.querySelectorAll(`.m-input-${id}`)).map(el => el.value);
+        let vArr = Array.from(document.querySelectorAll(`.v-input-${id}`)).map(el => el.value);
+        localStorage.setItem(`slot_${id}_mArr`, JSON.stringify(mArr));
+        localStorage.setItem(`slot_${id}_vArr`, JSON.stringify(vArr));
+
+        updateBookedList();
     }
 
-    function manualSave(id) {
-        autoSave(id);
-        alert(`Slot ${id} সফলভাবে সেভ হয়েছে!`);
-    }
+    function manualSave(id) { autoSave(id); alert(`সেভ হয়েছে! (Saved)`); }
 
-    function loadData(id) {
-        const cover = localStorage.getItem(`slot_${id}_cover`);
-        const profile = localStorage.getItem(`slot_${id}_profile`);
+    function loadSlotData(id) {
+        let cover = localStorage.getItem(`slot_${id}_cover`);
+        let profile = localStorage.getItem(`slot_${id}_profile`);
         if(cover) { document.getElementById(`cover-img-${id}`).src = cover; document.getElementById(`cover-img-${id}`).style.display = 'block'; }
         if(profile) { document.getElementById(`profile-img-${id}`).src = profile; document.getElementById(`profile-img-${id}`).style.display = 'block'; }
 
         document.getElementById(`link-${id}`).value = localStorage.getItem(`slot_${id}_link`) || '';
         document.getElementById(`name-${id}`).value = localStorage.getItem(`slot_${id}_name`) || '';
         document.getElementById(`wa-${id}`).value = localStorage.getItem(`slot_${id}_wa`) || '';
+        document.getElementById(`date-${id}`).value = localStorage.getItem(`slot_${id}_date`) || '';
         
         document.getElementById(`t-money-${id}`).value = localStorage.getItem(`slot_${id}_tm`) || '';
         document.getElementById(`a-money-${id}`).value = localStorage.getItem(`slot_${id}_am`) || '';
-        for(let j=1; j<=5; j++) document.getElementById(`pm-${j}-${id}`).value = localStorage.getItem(`slot_${id}_pm${j}`) || '';
-        
         document.getElementById(`t-view-${id}`).value = localStorage.getItem(`slot_${id}_tv`) || '';
-        for(let j=1; j<=5; j++) document.getElementById(`gv-${j}-${id}`).value = localStorage.getItem(`slot_${id}_gv${j}`) || '';
         
-        const status = localStorage.getItem(`slot_${id}_status`) || 'free';
-        updateStatusUI(id, status);
+        // Load Arrays for dynamic fields
+        let mArr = JSON.parse(localStorage.getItem(`slot_${id}_mArr`));
+        let vArr = JSON.parse(localStorage.getItem(`slot_${id}_vArr`));
+        
+        document.getElementById(`m-grid-${id}`).innerHTML = '';
+        document.getElementById(`v-grid-${id}`).innerHTML = '';
+        
+        if(!mArr) { for(let i=0; i<5; i++) addField(id, 'm'); } // Default 5
+        else { mArr.forEach(val => addField(id, 'm', val)); }
 
-        calcMoney(id);
-        calcView(id);
+        if(!vArr) { for(let i=0; i<5; i++) addField(id, 'v'); }
+        else { vArr.forEach(val => addField(id, 'v', val)); }
+
+        let status = localStorage.getItem(`slot_${id}_status`) || 'free';
+        if(status === 'booked') {
+            let badge = document.getElementById(`status-${id}`);
+            badge.classList.add('booked');
+            badge.innerText = textDict[currentLang].statusBooked;
+        }
+
+        calcMoney(id); calcView(id);
     }
 
-    function clearSlot(id) {
-        if(confirm("এই স্লটের সব ডাটা রিসেট করতে চান?")) {
-            let keys = ['cover','profile','link','name','wa','tm','am','tv','status'];
-            for(let j=1; j<=5; j++) { keys.push(`pm${j}`); keys.push(`gv${j}`); }
+    function clearSlotData(id) {
+        if(confirm("এই স্লটের ডাটা রিসেট করতে চান?")) {
+            let keys = ['cover','profile','link','name','wa','date','tm','am','tv','status','mArr','vArr'];
             keys.forEach(k => localStorage.removeItem(`slot_${id}_${k}`));
-            
-            document.getElementById(`cover-img-${id}`).style.display = 'none';
-            document.getElementById(`profile-img-${id}`).style.display = 'none';
-            document.getElementById(`link-${id}`).value = '';
-            document.getElementById(`name-${id}`).value = '';
-            document.getElementById(`wa-${id}`).value = '';
-            
-            document.getElementById(`t-money-${id}`).value = '';
-            document.getElementById(`a-money-${id}`).value = '';
-            for(let j=1; j<=5; j++) document.getElementById(`pm-${j}-${id}`).value = '';
-            
-            document.getElementById(`t-view-${id}`).value = '';
-            for(let j=1; j<=5; j++) document.getElementById(`gv-${j}-${id}`).value = '';
-            
-            updateStatusUI(id, 'free');
-            calcMoney(id); calcView(id);
-            updateBookedNames();
+            loadSlotData(id); // Reload default state
+            updateBookedList();
         }
     }
 
-    // Image Upload
-    function handleImage(event, type, id) {
-        const file = event.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = new Image();
-            img.onload = function() {
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                const MAX_WIDTH = type === 'cover' ? 500 : 150;
-                const scale = MAX_WIDTH / img.width;
-                canvas.width = MAX_WIDTH; canvas.height = img.height * scale;
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                const base64 = canvas.toDataURL('image/jpeg', 0.5); // 0.5 for compression
-                
-                document.getElementById(`${type}-img-${id}`).src = base64;
-                document.getElementById(`${type}-img-${id}`).style.display = 'block';
-                localStorage.setItem(`slot_${id}_${type}`, base64);
+    // Status / Booked List
+    function toggleStatus(id) {
+        let badge = document.getElementById(`status-${id}`);
+        let isBooked = badge.classList.contains('booked');
+        if(isBooked) {
+            badge.classList.remove('booked');
+            badge.innerText = textDict[currentLang].statusFree;
+            localStorage.setItem(`slot_${id}_status`, 'free');
+        } else {
+            badge.classList.add('booked');
+            badge.innerText = textDict[currentLang].statusBooked;
+            localStorage.setItem(`slot_${id}_status`, 'booked');
+        }
+        updateBookedList();
+    }
+
+    function updateBookedList() {
+        let list = [];
+        let arr = getActiveArray();
+        arr.forEach(id => {
+            let status = localStorage.getItem(`slot_${id}_status`);
+            if(status === 'booked') {
+                let name = document.getElementById(`name-${id}`).value.trim();
+                list.push({id: id, name: name || `Slot`});
             }
-            img.src = e.target.result;
+        });
+
+        let display = document.getElementById('bookedNamesDisplay');
+        display.innerHTML = '';
+        if(list.length === 0) display.innerText = textDict[currentLang].noBooking;
+        else {
+            list.forEach(item => {
+                let chip = document.createElement('div');
+                chip.className = 'booked-chip';
+                chip.innerHTML = `<span>🟢</span> ${item.name}`;
+                chip.onclick = () => document.getElementById(`card-${item.id}`).scrollIntoView({behavior: 'smooth'});
+                display.appendChild(chip);
+            });
+        }
+    }
+
+    // Utils
+    function handleImg(e, type, id) {
+        let file = e.target.files[0];
+        if(!file) return;
+        let reader = new FileReader();
+        reader.onload = function(ev) {
+            let img = new Image();
+            img.onload = function() {
+                let canvas = document.createElement('canvas');
+                let ctx = canvas.getContext('2d');
+                let maxW = type === 'cover' ? 600 : 150;
+                let scale = maxW / img.width;
+                canvas.width = maxW; canvas.height = img.height * scale;
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                let b64 = canvas.toDataURL('image/jpeg', 0.6);
+                document.getElementById(`${type}-img-${id}`).src = b64;
+                document.getElementById(`${type}-img-${id}`).style.display = 'block';
+                localStorage.setItem(`slot_${id}_${type}`, b64);
+            }
+            img.src = ev.target.result;
         }
         reader.readAsDataURL(file);
     }
 
-    // Status Toggle
-    function toggleStatus(id) {
-        let current = localStorage.getItem(`slot_${id}_status`) || 'free';
-        let newStatus = current === 'free' ? 'booked' : 'free';
-        localStorage.setItem(`slot_${id}_status`, newStatus);
-        updateStatusUI(id, newStatus);
-        updateBookedNames();
-    }
-
-    function updateStatusUI(id, status) {
-        const badge = document.getElementById(`status-${id}`);
-        if(status === 'booked') {
-            badge.classList.add('booked');
-            badge.innerText = textDict[currentLang].statusBooked;
-        } else {
-            badge.classList.remove('booked');
-            badge.innerText = textDict[currentLang].statusFree;
-        }
-    }
-
-    // Search Fix: Using style.display = 'flex' instead of 'block'
-    function searchSlots() {
-        const query = document.getElementById('searchInput').value.toLowerCase();
-        for(let i=1; i<=TOTAL_SLOTS; i++) {
-            const name = document.getElementById(`name-${i}`).value.toLowerCase();
-            const wa = document.getElementById(`wa-${i}`).value.toLowerCase();
-            const card = document.getElementById(`card-${i}`);
-            if(name.includes(query) || wa.includes(query)) {
-                card.style.display = 'flex'; 
-            } else {
-                card.style.display = 'none';
-            }
-        }
-    }
-
-    // Voice Search
-    function startVoiceSearch() {
-        if (!('webkitSpeechRecognition' in window)) {
-            alert("আপনার ব্রাউজার ভয়েস সার্চ সাপোর্ট করে । Google Chrome ব্যবহার করুন।");
-            return;
-        }
-        const recognition = new webkitSpeechRecognition();
-        recognition.lang = currentLang === 'bn' ? 'bn-BD' : 'en-US';
-        const btn = document.getElementById('voiceBtn');
-        
-        recognition.onstart = () => btn.classList.add('voice-recording');
-        recognition.onresult = (event) => {
-            document.getElementById('searchInput').value = event.results[0][0].transcript;
-            searchSlots();
-        };
-        recognition.onend = () => btn.classList.remove('voice-recording');
-        recognition.start();
-    }
-
-    // Language
-    function toggleLanguage() {
-        currentLang = currentLang === 'bn' ? 'en' : 'bn';
-        document.getElementById('langToggle').innerText = currentLang === 'bn' ? 'EN' : 'BN';
-        updateLanguageUI();
-    }
-
-    function updateLanguageUI() {
-        const dict = textDict[currentLang];
-        document.getElementById('searchInput').placeholder = dict.search;
-        document.querySelector('.lang-bookedTitle').innerText = dict.bookedTitle;
-        document.querySelector('.lang-globalDue').innerText = dict.globalDue;
-        
-        for(let i=1; i<=TOTAL_SLOTS; i++) {
-            document.querySelector(`#card-${i} .lang-slot`).innerText = dict.slot;
-            document.querySelector(`#link-${i}`).placeholder = dict.linkPlaceholder;
-            document.querySelector(`#card-${i} .lang-saveBtnSmall`).innerText = dict.saveBtnSmall;
-            document.querySelector(`#card-${i} .lang-userName`).innerText = dict.userName;
-            document.querySelector(`#card-${i} .lang-waNumber`).innerText = dict.waNumber;
-            document.querySelector(`#card-${i} .lang-totalMoney`).innerText = dict.totalMoney;
-            document.querySelector(`#card-${i} .lang-advance`).innerText = dict.advance;
-            document.querySelector(`#card-${i} .lang-payInstalls`).innerText = dict.payInstalls;
-            document.querySelector(`#card-${i} .lang-dueMoney`).innerText = dict.dueMoney;
-            document.querySelector(`#card-${i} .lang-targetView`).innerText = dict.targetView;
-            document.querySelector(`#card-${i} .lang-viewInstalls`).innerText = dict.viewInstalls;
-            document.querySelector(`#card-${i} .lang-remainingView`).innerText = dict.remainingView;
-            document.querySelector(`#card-${i} .lang-saveBtn`).innerText = dict.saveBtn;
-            document.querySelector(`#card-${i} .lang-resetBtn`).innerText = dict.resetBtn;
-            
-            const status = localStorage.getItem(`slot_${i}_status`) || 'free';
-            updateStatusUI(i, status);
-        }
-    }
-
-    // External Links
     function openLink(id) {
-        const url = document.getElementById(`link-${id}`).value;
-        if(url) window.open(url, '_blank'); else alert("লিংক দেওয়া নেই!");
+        let url = document.getElementById(`link-${id}`).value;
+        if(url) window.open(url.startsWith('http') ? url : 'https://'+url, '_blank'); else alert("লিংক দেওয়া নেই!");
     }
+    
     function openWA(id) {
         let num = document.getElementById(`wa-${id}`).value.replace(/\D/g, '');
         if(num) {
@@ -574,7 +654,78 @@
         } else alert("নাম্বার দেওয়া নেই!");
     }
 
+    function searchSlots() {
+        let q = document.getElementById('searchInput').value.toLowerCase();
+        getActiveArray().forEach(id => {
+            let name = document.getElementById(`name-${id}`).value.toLowerCase();
+            let wa = document.getElementById(`wa-${id}`).value.toLowerCase();
+            let card = document.getElementById(`card-${id}`);
+            if(name.includes(q) || wa.includes(q)) card.style.display = 'flex';
+            else card.style.display = 'none';
+        });
+    }
+
+    function startVoiceSearch() {
+        if (!('webkitSpeechRecognition' in window)) return alert("Voice search not supported.");
+        let rec = new webkitSpeechRecognition();
+        rec.lang = currentLang === 'bn' ? 'bn-BD' : 'en-US';
+        rec.onstart = () => document.getElementById('voiceBtn').classList.add('voice-recording');
+        rec.onresult = (e) => { document.getElementById('searchInput').value = e.results[0][0].transcript; searchSlots(); };
+        rec.onend = () => document.getElementById('voiceBtn').classList.remove('voice-recording');
+        rec.start();
+    }
+
+    function toggleLanguage() {
+        currentLang = currentLang === 'bn' ? 'en' : 'bn';
+        document.getElementById('langToggle').innerText = currentLang === 'bn' ? 'EN' : 'BN';
+        updateUI();
+    }
+
+    function updateUI() {
+        const d = textDict[currentLang];
+        document.getElementById('searchInput').placeholder = d.search;
+        document.querySelector('.lang-bookedTitle').innerText = d.bookedTitle;
+        document.querySelector('.lang-globDueTxt').innerText = d.globDueTxt;
+        document.querySelector('.lang-globCompView').innerText = d.globCompView;
+        document.querySelector('.lang-globDueView').innerText = d.globDueView;
+        
+        document.querySelector('.lang-modeTxt').innerText = currentMode === 'normal' ? d.modePremium : d.modeNormal;
+
+        if(document.getElementById('bookedNamesDisplay').innerText === textDict[currentLang==='bn'?'en':'bn'].noBooking) {
+            document.getElementById('bookedNamesDisplay').innerText = d.noBooking;
+        }
+
+        getActiveArray().forEach(id => {
+            document.querySelector(`#card-${id} .lang-slot`).innerText = d.slot;
+            document.querySelector(`#link-${id}`).placeholder = d.linkPlaceholder;
+            document.querySelector(`#card-${id} .lang-openBtn`).innerText = d.openBtn;
+            document.querySelector(`#card-${id} .lang-userName`).innerText = d.userName;
+            document.querySelector(`#card-${id} .lang-waNumber`).innerText = d.waNumber;
+            document.querySelector(`#card-${id} .lang-dateLbl`).innerText = d.dateLbl;
+            document.querySelector(`#card-${id} .lang-moneySec`).innerText = d.moneySec;
+            document.querySelector(`#card-${id} .lang-viewSec`).innerText = d.viewSec;
+            document.querySelector(`#card-${id} .lang-totalTk`).placeholder = d.totalTk;
+            document.querySelector(`#card-${id} .lang-advTk`).placeholder = d.advTk;
+            document.querySelector(`#card-${id} .lang-targetVw`).placeholder = d.targetVw;
+            document.querySelector(`#card-${id} .lang-remTk`).innerText = d.remTk;
+            document.querySelector(`#card-${id} .lang-remVw`).innerText = d.remVw;
+            document.querySelector(`#card-${id} .lang-saveBtn`).innerText = d.saveBtn;
+            document.querySelector(`#card-${id} .lang-resetBtn`).innerText = d.resetBtn;
+            
+            document.querySelectorAll(`#card-${id} .lang-tkSuffix`).forEach(el => el.innerText = d.tkSuffix);
+            document.querySelectorAll(`#card-${id} .lang-vwSuffix`).forEach(el => el.innerText = d.vwSuffix);
+            
+            document.querySelectorAll(`#card-${id} .lang-installTk`).forEach(el => el.placeholder = d.installTk);
+            document.querySelectorAll(`#card-${id} .lang-installVw`).forEach(el => el.placeholder = d.installVw);
+            
+            let badge = document.getElementById(`status-${id}`);
+            if(badge.classList.contains('booked')) badge.innerText = d.statusBooked;
+            else badge.innerText = d.statusFree;
+        });
+    }
+
     window.onload = init;
+
 </script>
 
 </body>
