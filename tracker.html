@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Premium Slot Tracker with Mayra Voice AI</title>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #151f32;
+            --text-color: #f8fafc;
+            --primary: #3b82f6;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --border: #24324d;
+            --accent: #a855f7;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .lang-switch button {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 6px 15px;
+            cursor: pointer;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .lang-switch button.active {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        h1 {
+            text-align: center;
+            margin: 10px 0 25px 0;
+            font-weight: 700;
+        }
+
+        /* Mayra AI Panel */
+        .ai-panel {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        .ai-header {
+            font-weight: bold;
+            color: #c084fc;
+            margin-bottom: 10px;
+            font-size: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ef4444;
+            display: inline-block;
+        }
+
+        .status-dot.active {
+            background: #22c55e;
+            box-shadow: 0 0 10px #22c55e;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .ai-instructions {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 15px;
+        }
+
+        .voice-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .voice-btn:hover {
+            transform: scale(1.05);
+            background: #9333ea;
+        }
+
+        .ai-response {
+            margin-top: 12px;
+            font-size: 14px;
+            color: #a7f3d0;
+            font-weight: 500;
+            min-height: 20px;
+        }
+
+        /* Slots Grid */
+        .slots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 25px;
+        }
+
+        .slot-card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .card-banner {
+            height: 90px;
+            background: #1e293b;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .avatar-container {
+            position: absolute;
+            bottom: -30px;
+            left: 20px;
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            border: 3px solid var(--card-bg);
+            background: #334155;
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+        }
+
+        .upload-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+            cursor: pointer;
+            font-size: 10px;
+            color: #fff;
+            text-align: center;
+        }
+
+        .card-banner:hover .upload-overlay,
+        .avatar-container:hover .upload-overlay {
+            opacity: 1;
+        }
+
+        .slot-content {
+            padding: 40px 20px 10px 20px;
+        }
+
+        .slot-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .slot-number { font-weight: bold; font-size: 18px; }
+
+        .status-badge {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .status-badge.booked { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+        .status-badge.available { background: rgba(34, 197, 94, 0.2); color: var(--success); }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 8px;
+        }
+
+        .input-group.full-width { grid-column: span 2; }
+
+        .input-group input.label-edit {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 11px;
+            text-transform: uppercase;
+            padding: 0;
+            width: 100%;
+            margin-bottom: 4px;
+            outline: none;
+        }
+
+        .input-group input.val-input {
+            width: 100%;
+            padding: 8px 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: #fff;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .input-group input.val-input:disabled {
+            background: transparent;
+            border-color: transparent;
+            padding-left: 0;
+            font-weight: 600;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            padding: 0 20px;
+        }
+
+        button.action-btn {
+            flex: 1;
+            padding: 8px 5px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .btn-edit { background: var(--primary); color: white; }
+        .btn-save { background: var(--success); color: white; display: none; }
+        .btn-toggle { background: #334155; color: #cbd5e1; }
+
+        .file-input { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-bar">
+        <div class="lang-switch">
+            <button id="btn-bn" class="active" onclick="switchLanguage('bn')">বাংলা</button>
+            <button id="btn-en" onclick="switchLanguage('en')">English</button>
+        </div>
+    </div>
+
+    <h1 id="main-title">Premium Slot Tracker</h1>
+
+    <!-- Mayra Voice AI Panel -->
+    <div class="ai-panel">
+        <div class="ai-header">
+            <span class="status-dot" id="mayra-status"></span>
+            <span>🎙️ Mayra Voice Assistant</span>
+        </div>
+        <div class="ai-instructions" id="ai-inst">
+            ওয়েবসাইটে ঢোকার পর মায়রাকে সচল করতে নিচের বাটনে একবার চাপুন। তারপর বলুন: "হেই মায়রা, স্লট ২ এর নাম রাব্বি করে দাও।"
+        </div>
+        <button class="voice-btn" id="start-voice-btn" onclick="initMayra()">Wake Up Mayra</button>
+        <div class="ai-response" id="ai-output">Mayra is sleeping...</div>
+    </div>
+
+    <!-- Slots Grid Container -->
+    <div class="slots-grid" id="slots-container"></div>
+</div>
+
+<script>
+    let currentLang = 'bn';
+    let recognition;
+    let isMayraListening = false;
+
+    const langData = {
+        bn: {
+            title: "প্রিমিয়াম স্লট ট্র্যাকার",
+            userName: "ইউজার নেম",
+            lbl1: "অ্যাডভান্স পেমেন্ট",
+            lbl2: "বাকি টাকা",
+            lbl3: "দেওয়া ভিউ",
+            lbl4: "টার্গেট ভিউ",
+            edit: "এডিট",
+            save: "সেভ",
+            book: "বুক",
+            release: "রিলিজ",
+            booked: "বুকড",
+            available: "ফ্রি"
+        },
+        en: {
+            title: "Premium Slot Tracker",
+            userName: "User Name",
+            lbl1: "Advance Paid",
+            lbl2: "Due Amount",
+            lbl3: "Given Views",
+            lbl4: "Target Views",
+            edit: "Edit",
+            save: "Save",
+            book: "Book",
+            release: "Release",
+            booked: "Booked",
+            available: "Available"
+        }
+    };
+
+    // Load Data
+    let slotsData = JSON.parse(localStorage.getItem('megaSlotsData'));
+    if (!slotsData) {
+        slotsData = [];
+        for (let i = 1; i <= 20; i++) {
+            slotsData.push({
+                id: i,
+                name: '',
+                status: 'Available',
+                banner: '',
+                avatar: '',
+                label1: langData.bn.lbl1,
+                val1: '',
+                label2: langData.bn.lbl2,
+                val2: '',
+                label3: langData.bn.lbl3,
+                val3: '',
+                label4: langData.bn.lbl4,
+                val4: ''
+            });
+        }
+        localStorage.setItem('megaSlotsData', JSON.stringify(slotsData));
+    }
+
+    function switchLanguage(lang) {
+        currentLang = lang;
+        document.getElementById('btn-bn').classList.toggle('active', lang === 'bn');
+        document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+        document.getElementById('main-title').innerText = langData[lang].title;
+        renderSlots();
+    }
+
+    function renderSlots() {
+        const container = document.getElementById('slots-container');
+        container.innerHTML = '';
+
+        slotsData.forEach(slot => {
+            const isBooked = slot.status === 'Booked';
+            const statusText = isBooked ? langData[currentLang].booked : langData[currentLang].available;
+            const toggleText = isBooked ? langData[currentLang].release : langData[currentLang].book;
+
+            const card = document.createElement('div');
+            card.className = `slot-card ${isBooked ? 'booked' : 'available'}`;
+
+            card.innerHTML = `
+                <div class="card-banner" style="background-image: url('${slot.banner || ''}')">
+                    <div class="upload-overlay" onclick="triggerUpload('banner', ${slot.id})">📸 Cover</div>
+                    <input type="file" id="file-banner-${slot.id}" class="file-input" onchange="handleUpload(this, 'banner', ${slot.id})">
+                    
+                    <div class="avatar-container" style="background-image: url('${slot.avatar || ''}')">
+                        <div class="upload-overlay" onclick="triggerUpload('avatar', ${slot.id})">👤 Pic</div>
+                        <input type="file" id="file-avatar-${slot.id}" class="file-input" onchange="handleUpload(this, 'avatar', ${slot.id})">
+                    </div>
+                </div>
+
+                <div class="slot-content">
+                    <div class="slot-header">
+                        <span class="slot-number">Slot ${slot.id}</span>
+                        <span class="status-badge ${slot.status.toLowerCase()}">${statusText}</span>
+                    </div>
+                    
+                    <div class="input-group full-width">
+                        <input type="text" class="label-edit" value="${langData[currentLang].userName}" disabled>
+                        <input type="text" id="name-${slot.id}" class="val-input" value="${slot.name}" placeholder="..." disabled>
+                    </div>
+
+                    <div class="details-grid">
+                        <div class="input-group">
+                            <input type="text" id="lbl1-${slot.id}" class="label-edit" value="${slot.label1}" disabled>
+                            <input type="text" id="val1-${slot.id}" class="val-input" value="${slot.val1}" placeholder="0" disabled>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="lbl2-${slot.id}" class="label-edit" value="${slot.label2}" disabled>
+                            <input type="text" id="val2-${slot.id}" class="val-input" value="${slot.val2}" placeholder="0" disabled>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="lbl3-${slot.id}" class="label-edit" value="${slot.label3}" disabled>
+                            <input type="text" id="val3-${slot.id}" class="val-input" value="${slot.val3}" placeholder="0" disabled>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="lbl4-${slot.id}" class="label-edit" value="${slot.label4}" disabled>
+                            <input type="text" id="val4-${slot.id}" class="val-input" value="${slot.val4}" placeholder="0" disabled>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="action-btn btn-edit" id="edit-btn-${slot.id}" onclick="enableEdit(${slot.id})">${langData[currentLang].edit}</button>
+                    <button class="action-btn btn-save" id="save-btn-${slot.id}" onclick="saveSlot(${slot.id})">${langData[currentLang].save}</button>
+                    <button class="action-btn btn-toggle" onclick="toggleStatus(${slot.id})">${toggleText}</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function triggerUpload(type, id) {
+        document.getElementById(`file-${type}-${id}`).click();
+    }
+
+    function handleUpload(input, type, id) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const idx = slotsData.findIndex(s => s.id === id);
+                if (idx > -1) {
+                    if (type === 'banner') slotsData[idx].banner = e.target.result;
+                    if (type === 'avatar') slotsData[idx].avatar = e.target.result;
+                    localStorage.setItem('megaSlotsData', JSON.stringify(slotsData));
+                    renderSlots();
+                }
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function enableEdit(id) {
+        document.getElementById(`name-${id}`).disabled = false;
+        document.getElementById(`lbl1-${id}`).disabled = false;
+        document.getElementById(`lbl2-${id}`).disabled = false;
+        document.getElementById(`lbl3-${id}`).disabled = false;
+        document.getElementById(`lbl4-${id}`).disabled = false;
+        document.getElementById(`val1-${id}`).disabled = false;
+        document.getElementById(`val2-${id}`).disabled = false;
+        document.getElementById(`val3-${id}`).disabled = false;
+        document.getElementById(`val4-${id}`).disabled = false;
+        document.getElementById(`edit-btn-${id}`).style.display = 'none';
+        document.getElementById(`save-btn-${id}`).style.display = 'inline-block';
+    }
+
+    function saveSlot(id) {
+        const idx = slotsData.findIndex(s => s.id === id);
+        if (idx > -1) {
+            slotsData[idx].name = document.getElementById(`name-${id}`).value.trim();
+            slotsData[idx].label1 = document.getElementById(`lbl1-${id}`).value.trim();
+            slotsData[idx].label2 = document.getElementById(`lbl2-${id}`).value.trim();
+            slotsData[idx].label3 = document.getElementById(`lbl3-${id}`).value.trim();
+            slotsData[idx].label4 = document.getElementById(`lbl4-${id}`).value.trim();
+            slotsData[idx].val1 = document.getElementById(`val1-${id}`).value.trim();
+            slotsData[idx].val2 = document.getElementById(`val2-${id}`).value.trim();
+            slotsData[idx].val3 = document.getElementById(`val3-${id}`).value.trim();
+            slotsData[idx].val4 = document.getElementById(`val4-${id}`).value.trim();
+            if (slotsData[idx].name !== '') slotsData[idx].status = 'Booked';
+            localStorage.setItem('megaSlotsData', JSON.stringify(slotsData));
+        }
+        renderSlots();
+    }
+
+    function toggleStatus(id) {
+        const idx = slotsData.findIndex(s => s.id === id);
+        if (idx > -1) {
+            if (slotsData[idx].status === 'Booked') {
+                slotsData[idx].status = 'Available';
+                slotsData[idx].name = '';
+                slotsData[idx].val1 = ''; slotsData[idx].val2 = '';
+                slotsData[idx].val3 = ''; slotsData[idx].val4 = '';
+                slotsData[idx].banner = ''; slotsData[idx].avatar = '';
+            } else {
+                slotsData[idx].status = 'Booked';
+            }
+            localStorage.setItem('megaSlotsData', JSON.stringify(slotsData));
+        }
+        renderSlots();
+    }
+
+    // ================= Mayra Voice System =================
+    function initMayra() {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert("দুঃখিত ভাই, আপনার ব্রাউজারে ভয়েস সিস্টেম সাপোর্ট করছে না। Chrome ব্যবহার করুন।");
+            return;
+        }
+
+        recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = false;
+        recognition.lang = 'bn-BD'; // Set Language to Bengali
+
+        recognition.onstart = () => {
+            document.getElementById('mayra-status').className = 'status-dot active';
+            document.getElementById('ai-output').innerText = "🔊 মায়রা এখন জেগে আছে। বলুন 'হেই মায়রা'...";
+            document.getElementById('start-voice-btn').style.display = 'none';
+        };
+
+        recognition.onresult = (event) => {
+            const currentResultIndex = event.resultIndex;
+            const text = event.results[currentResultIndex][0].transcript.toLowerCase().trim();
+            console.log("শুনেছি:", text);
+
+            // Wake word trigger
+            if (text.includes("মায়রা") || text.includes("mayra") || text.includes("মাইরা")) {
+                document.getElementById('ai-output').innerText = "🎙️ মায়রা আপনার কমান্ড শুনছে...";
+                executeVoiceCommand(text);
+            }
+        };
+
+        recognition.onerror = (err) => {
+            console.error("ভয়েস ইরর:", err);
+            document.getElementById('ai-output').innerText = "❌ আবার চেষ্টা করুন...";
+        };
+
+        recognition.onend = () => {
+            // Automatically restarts Mayra to keep her active inside the website
+            recognition.start();
+        };
+
+        recognition.start();
+    }
+
+    function executeVoiceCommand(cmd) {
+        const output = document.getElementById('ai-output');
+        
+        // Find Slot Number
+        const slotMatch = cmd.match(/স্লট\s*(\d+)/) || cmd.match(/slot\s*(\d+)/);
+        if (!slotMatch) {
+            output.innerText = "❌ স্লট নম্বরটি বুঝতে পারিনি। (যেমন: স্লট ৫ বলুন)";
+            return;
+        }
+
+        const slotId = parseInt(slotMatch[1]);
+        const idx = slotsData.findIndex(s => s.id === slotId);
+
+        if (idx === -1) {
+            output.innerText = "❌ এই নম্বরের কোনো স্লট নেই।";
+            return;
+        }
+
+        // Action 1: Change Name (নাম পরিবর্তন)
+        if (cmd.includes("নাম") || cmd.includes("name")) {
+            let cleanName = cmd.replace(/.*(?:নাম|name)\s*/, '')
+                               .replace(/(?:করে\s*দাও|করো|দাও|হবে)/g, '')
+                               .replace(/.*(?:মাইরা|মায়রা)\s*/, '')
+                               .trim();
+            
+            if (cleanName) {
+                slotsData[idx].name = cleanName;
+                slotsData[idx].status = 'Booked';
+                localStorage.setItem('megaSlotsData', JSON.stringify(slotsData));
+                renderSlots();
+                output.innerText = `✅ সফল! স্লট ${slotId} এর নাম '${cleanName}' করা হয়েছে।`;
+                return;
+            }
+        }
+
+        // Action 2: Change Figures (ভিউ বা টাকা পরিবর্তন)
+        let numMatch = cmd.match(/(\d+)/g);
+        let valueToSet = null;
+        
+        // Pick the number that is NOT the slot number
+        if (numMatch) {
+            for (let num of numMatch) {
+                if (parseInt(num) !== slotId) {
+                    valueToSet = num;
+                    break;
+                }
+            }
+        }
+
+        if (valueToSet) {
+            let target = "";
+            if (cmd.includes("অ্যাডভান্স") || cmd.includes("advance")) {
+                slotsData[idx].val1 = valueToSet;
+                target = "অ্যাডভান্স পেমেন্ট";
+            } else if (cmd.includes("বাকি") || cmd.includes("due")) {
+                slotsData[idx].val2 = valueToSet;
+                target = "বাকি টাকা";
+            } else if (cmd.includes("দেওয়া") || cmd.includes("given")) {
+                slotsData[idx].val3 = valueToSet;
+                target = "দেওয়া ভিউ";
+            } else if (cmd.includes("টার্গেট") || cmd.includes("target") || cmd.includes("ভিউ") || cmd.includes("view")) {
+                slotsData[idx].val4 = valueToSet;
+                target = "টার্গেট ভিউ";
+            }
+
+            if (target) {
+                localStorage.setItem('megaSlotsData', JSON.stringify(slotsData));
+                renderSlots();
+                output.innerText = `✅ সফল! স্লট ${slotId} এর ${target} '${valueToSet}' করা হয়েছে।`;
+                return;
+            }
+        }
+
+        output.innerText = "❌ কমান্ডটি ঠিক বুঝতে পারিনি, রাব্বি ভাই। আবার বলুন।";
+    }
+
+    // Auto-load UI
+    switchLanguage('bn');
+</script>
+
+</body>
+</html>
