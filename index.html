@@ -1,456 +1,356 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Premium Slot Tracker</title>
+    <title>Premium Slot Tracker</title>
     <style>
         :root {
-            --bg-color: #0b0f19;
-            --card-bg: #151f32;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
             --text-color: #f8fafc;
-            --primary: #3b82f6;
-            --success: #22c55e;
-            --danger: #ef4444;
-            --border: #24324d;
+            --accent-color: #38bdf8;
+            --success-color: #22c55e;
+            --danger-color: #ef4444;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
-            margin: 0;
             padding: 20px;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1280px;
             margin: 0 auto;
         }
 
-        h1 {
+        header {
             text-align: center;
-            margin: 10px 0 25px 0;
-            font-weight: 700;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
         }
 
-        /* Slots Grid */
+        header h1 {
+            color: var(--accent-color);
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
         .slots-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
         }
 
         .slot-card {
-            background: var(--card-bg);
-            border-radius: 14px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-            position: relative;
-            padding-bottom: 15px;
-        }
-
-        .slot-card.booked {
-            border: 2px solid var(--danger);
-            background-color: rgba(239, 68, 68, 0.05);
-        }
-
-        .slot-card.available {
-            border: 2px solid var(--success);
-        }
-
-        .card-banner {
-            height: 90px;
-            background: #1e293b;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-        }
-
-        .avatar-container {
-            position: absolute;
-            bottom: -30px;
-            left: 20px;
-            width: 65px;
-            height: 65px;
-            border-radius: 50%;
-            border: 3px solid var(--card-bg);
-            background: #334155;
-            background-size: cover;
-            background-position: center;
-            overflow: hidden;
-            z-index: 10;
-        }
-
-        .upload-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.2s;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
-            color: #fff;
-            text-align: center;
-            z-index: 15;
-        }
-
-        .card-banner:hover .upload-overlay,
-        .avatar-container:hover .upload-overlay {
-            opacity: 1;
-        }
-
-        .slot-content {
-            padding: 40px 20px 10px 20px;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
         }
 
         .slot-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid var(--border-color);
             padding-bottom: 8px;
         }
 
-        .slot-number { 
-            font-weight: bold; 
-            font-size: 16px; 
-            color: #fff;
-        }
-
-        .status-badge {
-            font-size: 11px;
-            padding: 3px 8px;
-            border-radius: 20px;
+        .slot-title {
             font-weight: bold;
+            color: var(--accent-color);
+            font-size: 1.1rem;
         }
-        .status-badge.booked { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
-        .status-badge.available { background: rgba(34, 197, 94, 0.2); color: var(--success); }
 
-        .details-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 10px;
+        .image-box {
+            width: 100%;
+            height: 160px;
+            background-color: #0b0f19;
+            border: 2px dashed #475569;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-placeholder {
+            color: #64748b;
+            font-size: 0.85rem;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .file-input {
+            display: none;
         }
 
         .input-group {
-            margin-bottom: 8px;
-        }
-
-        .input-group.full-width { grid-column: span 2; }
-
-        .input-group input.label-edit {
-            background: transparent;
-            border: none;
-            color: #94a3b8;
-            font-size: 11px;
-            text-transform: uppercase;
-            padding: 0;
-            width: 100%;
-            margin-bottom: 4px;
-            outline: none;
-        }
-
-        .input-group input.val-input {
-            width: 100%;
-            padding: 8px 10px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: #fff;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
-
-        .input-group input.val-input:disabled {
-            background: transparent;
-            border-color: transparent;
-            padding-left: 0;
-            font-weight: 600;
-        }
-
-        .actions {
             display: flex;
-            gap: 8px;
-            margin-top: 15px;
-            padding: 0 20px;
+            flex-direction: column;
+            gap: 4px;
         }
 
-        button.action-btn {
+        .input-group label {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 6px;
+        }
+
+        input[type="text"], input[type="tel"] {
             flex: 1;
-            padding: 8px 5px;
-            border: none;
+            padding: 8px 12px;
+            background-color: #0f172a;
+            border: 1px solid var(--border-color);
             border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 13px;
-        }
-
-        .btn-edit { background: var(--primary); color: white; }
-        .btn-save { background: var(--success); color: white; display: none; }
-        .btn-toggle { background: #334155; color: #cbd5e1; }
-        
-        .file-input { display: none; }
-
-        /* Link specific styling */
-        .link-wrapper {
-            display: flex; 
-            align-items: center; 
-            gap: 6px; 
-            background: rgba(0,0,0,0.3);
-            padding: 3px 6px;
-            border-radius: 6px;
-            border: 1px solid #334155;
-        }
-        
-        .link-input {
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-size: 11px;
-            width: 70px;
+            color: var(--text-color);
+            font-size: 0.85rem;
             outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: var(--accent-color);
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-action {
+            background-color: var(--accent-color);
+        }
+
+        .btn-wa {
+            background-color: var(--success-color);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            width: 100%;
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Premium Slot Tracker</h1>
-    <div class="slots-grid" id="slots-container"></div>
+    <header>
+        <h1>Slot Tracker Pro</h1>
+        <p>ছবি, লিংক এবং হোয়াটসঅ্যাপ/একাউন্ট নম্বর ট্র্যাকিং সিস্টেম</p>
+    </header>
+
+    <div class="slots-grid" id="slotsContainer">
+        </div>
 </div>
 
 <script>
-    // ডেটা লোড এবং প্রস্তুত করা
-    let slotsData = JSON.parse(localStorage.getItem('megaSlotsData'));
-    if (!slotsData || slotsData.length === 0) {
-        slotsData = [];
-        for (let i = 1; i <= 20; i++) {
-            slotsData.push({
-                id: i, name: '', status: 'Available', banner: '', avatar: '', tiktok: '',
-                label1: "অ্যাডভান্স পেমেন্ট", val1: '',
-                label2: "বাকি টাকা", val2: '',
-                label3: "দেওয়া ভিউ", val3: '',
-                label4: "টার্গেট ভিউ", val4: ''
-            });
+    // আপনি এখানে স্লটের সংখ্যা কাস্টমাইজ করতে পারেন (যেমন: ১২, ২০ বা ২৪টি)
+    const TOTAL_SLOTS = 16; 
+    const slotsContainer = document.getElementById('slotsContainer');
+
+    // পেজ লোড হওয়ার সময় স্লটগুলো জেনারেট করা
+    function initTracker() {
+        for (let i = 1; i <= TOTAL_SLOTS; i++) {
+            createSlotCard(i);
+            loadSlotData(i);
         }
-        localStorage.setItem('megaSlotsData', JSON.stringify(slotsData));
     }
 
-    // পুরানো ডেটাতে লিংক অপশন না থাকলে যুক্ত করা
-    slotsData.forEach(slot => {
-        if (slot.tiktok === undefined) slot.tiktok = '';
-    });
-
-    function renderSlots() {
-        const container = document.getElementById('slots-container');
-        container.innerHTML = '';
-
-        slotsData.forEach(slot => {
-            const isBooked = slot.status === 'Booked';
-            const statusText = isBooked ? 'বুকড' : 'ফ্রি';
-            const toggleText = isBooked ? 'রিলিজ' : 'বুক';
+    // একটি স্লট কার্ডের HTML তৈরি করা
+    function createSlotCard(id) {
+        const card = document.createElement('div');
+        card.className = 'slot-card';
+        card.innerHTML = `
+            <div class="slot-header">
+                <span class="slot-title">Slot ${id}</span>
+            </div>
             
-            const formattedLink = slot.tiktok.startsWith('http') ? slot.tiktok : (slot.tiktok ? 'https://' + slot.tiktok : '');
-
-            const card = document.createElement('div');
-            card.className = `slot-card ${isBooked ? 'booked' : 'available'}`;
-
-            card.innerHTML = `
-                <div class="card-banner" style="background-image: url('${slot.banner || ''}')">
-                    <div class="upload-overlay" onclick="triggerUpload('banner', ${slot.id})">📸 Cover</div>
-                    <input type="file" id="file-banner-${slot.id}" class="file-input" onchange="handleUpload(this, 'banner', ${slot.id})" accept="image/*">
-                    
-                    <div class="avatar-container" style="background-image: url('${slot.avatar || ''}')">
-                        <div class="upload-overlay" onclick="triggerUpload('avatar', ${slot.id})">👤 Pic</div>
-                        <input type="file" id="file-avatar-${slot.id}" class="file-input" onchange="handleUpload(this, 'avatar', ${slot.id})" accept="image/*">
-                    </div>
+            <div class="image-box" onclick="document.getElementById('file-${id}').click()">
+                <div class="image-placeholder" id="placeholder-${id}">📸 ক্লিক করে ছবি আপলোড করুন</div>
+                <img id="view-img-${id}" style="display:none;" src="" alt="Slot Image">
+            </div>
+            <input type="file" id="file-${id}" class="file-input" accept="image/*" onchange="uploadAndCompress(event, ${id})">
+            
+            <div class="input-group">
+                <label>লিংক / ইউআরএল:</label>
+                <div class="input-wrapper">
+                    <input type="text" id="link-${id}" placeholder="https://..." oninput="saveTextData(${id})">
+                    <button class="btn btn-action" onclick="openLink(${id})">Open</button>
                 </div>
+            </div>
 
-                <div class="slot-content">
-                    <div class="slot-header">
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span class="slot-number">Slot ${slot.id}</span>
-                            
-                            <div class="link-wrapper">
-                                <input type="text" id="link-${slot.id}" class="link-input" value="${slot.tiktok}" placeholder="Add Link...">
-                                <button onclick="saveLink(${slot.id})" style="background:var(--primary); color:white; border:none; border-radius:4px; font-size:10px; cursor:pointer; padding:3px 6px;">Save</button>
-                                ${slot.tiktok ? `<a href="${formattedLink}" target="_blank" style="text-decoration:none; color:#10b981; font-size:14px; margin-left:2px;" title="Visit Link">🔗</a>` : ''}
-                            </div>
-                        </div>
-                        <span class="status-badge ${slot.status.toLowerCase()}">${statusText}</span>
-                    </div>
-                    
-                    <div class="input-group full-width">
-                        <input type="text" class="label-edit" value="ইউজার নেম" disabled>
-                        <input type="text" id="name-${slot.id}" class="val-input" value="${slot.name}" placeholder="..." disabled>
-                    </div>
-
-                    <div class="details-grid">
-                        <div class="input-group">
-                            <input type="text" id="lbl1-${slot.id}" class="label-edit" value="${slot.label1}" disabled>
-                            <input type="text" id="val1-${slot.id}" class="val-input" value="${slot.val1}" placeholder="0" disabled>
-                        </div>
-                        <div class="input-group">
-                            <input type="text" id="lbl2-${slot.id}" class="label-edit" value="${slot.label2}" disabled>
-                            <input type="text" id="val2-${slot.id}" class="val-input" value="${slot.val2}" placeholder="0" disabled>
-                        </div>
-                        <div class="input-group">
-                            <input type="text" id="lbl3-${slot.id}" class="label-edit" value="${slot.label3}" disabled>
-                            <input type="text" id="val3-${slot.id}" class="val-input" value="${slot.val3}" placeholder="0" disabled>
-                        </div>
-                        <div class="input-group">
-                            <input type="text" id="lbl4-${slot.id}" class="label-edit" value="${slot.label4}" disabled>
-                            <input type="text" id="val4-${slot.id}" class="val-input" value="${slot.val4}" placeholder="0" disabled>
-                        </div>
-                    </div>
+            <div class="input-group">
+                <label>অ্যাকাউন্ট / WhatsApp নম্বর:</label>
+                <div class="input-wrapper">
+                    <input type="tel" id="number-${id}" placeholder="নম্বর লিখুন..." oninput="saveTextData(${id})">
+                    <button class="btn btn-wa" onclick="openWhatsApp(${id})" title="সরাসরি হোয়াটসঅ্যাপ করুন">WA</button>
                 </div>
+            </div>
 
-                <div class="actions">
-                    <button class="action-btn btn-edit" id="edit-btn-${slot.id}" onclick="enableEdit(${slot.id})">এডিট</button>
-                    <button class="action-btn btn-save" id="save-btn-${slot.id}" onclick="saveSlot(${slot.id})">সেভ</button>
-                    <button class="action-btn btn-toggle" onclick="toggleStatus(${slot.id})">${toggleText}</button>
-                </div>
-            `;
-            container.appendChild(card);
-        });
+            <button class="btn btn-danger" onclick="clearSlot(${id})">Clear Slot</button>
+        `;
+        slotsContainer.appendChild(card);
     }
 
-    // ইমেজ আপলোডের জন্য ট্রিগার
-    function triggerUpload(type, id) {
-        document.getElementById(`file-${type}-${id}`).click();
-    }
+    // ইমেজ আপলোড এবং কম্প্রেস করা (Local Storage সাইজ বাঁচানোর জন্য)
+    function uploadAndCompress(event, id) {
+        const file = event.target.files[0];
+        if (!file) return;
 
-    // ছবি ছোট করার ফাংশন (কম্প্রেসার) - যাতে স্টোরেজ ফুল না হয়
-    function resizeImage(base64Str) {
-        return new Promise((resolve) => {
-            let img = new Image();
-            img.src = base64Str;
-            img.onload = () => {
-                let canvas = document.createElement('canvas');
-                let MAX_WIDTH = 300; // ছবি রিসাইজ করে ছোট করা হবে
-                let MAX_HEIGHT = 300;
-                let width = img.width;
-                let height = img.height;
-
-                if (width > height) {
-                    if (width > MAX_WIDTH) {
-                        height *= MAX_WIDTH / width;
-                        width = MAX_WIDTH;
-                    }
-                } else {
-                    if (height > MAX_HEIGHT) {
-                        width *= MAX_HEIGHT / height;
-                        height = MAX_HEIGHT;
-                    }
-                }
-                canvas.width = width;
-                canvas.height = height;
-                let ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
-                resolve(canvas.toDataURL('image/jpeg', 0.6)); // সাইজ কমানো হলো
-            };
-        });
-    }
-
-    // ছবি আপলোড হ্যান্ডলার
-    function handleUpload(input, type, id) {
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                try {
-                    // ছবি কম্প্রেস করে সেভ করা হচ্ছে
-                    const compressedImage = await resizeImage(e.target.result);
-                    const parsedId = parseInt(id);
-                    const idx = slotsData.findIndex(s => s.id === parsedId);
-                    
-                    if (idx > -1) {
-                        if (type === 'banner') slotsData[idx].banner = compressedImage;
-                        if (type === 'avatar') slotsData[idx].avatar = compressedImage;
-                        
-                        localStorage.setItem('megaSlotsData', JSON.stringify(slotsData));
-                        renderSlots();
-                    }
-                } catch (error) {
-                    alert("ছবি সেভ করতে সমস্যা হচ্ছে! দয়া করে ছোট সাইজের ছবি দিন।");
-                }
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    // লিংক সেভ করার ফাংশন
-    function saveLink(id) {
-        const parsedId = parseInt(id);
-        const idx = slotsData.findIndex(s => s.id === parsedId);
-        if (idx > -1) {
-            const linkVal = document.getElementById(`link-${id}`).value.trim();
-            slotsData[idx].tiktok = linkVal;
-            localStorage.setItem('megaSlotsData', JSON.stringify(slotsData));
-            renderSlots();
-        }
-    }
-
-    function enableEdit(id) {
-        document.getElementById(`name-${id}`).disabled = false;
-        document.getElementById(`lbl1-${id}`).disabled = false;
-        document.getElementById(`lbl2-${id}`).disabled = false;
-        document.getElementById(`lbl3-${id}`).disabled = false;
-        document.getElementById(`lbl4-${id}`).disabled = false;
-        document.getElementById(`val1-${id}`).disabled = false;
-        document.getElementById(`val2-${id}`).disabled = false;
-        document.getElementById(`val3-${id}`).disabled = false;
-        document.getElementById(`val4-${id}`).disabled = false;
-        document.getElementById(`edit-btn-${id}`).style.display = 'none';
-        document.getElementById(`save-btn-${id}`).style.display = 'inline-block';
-    }
-
-    function saveSlot(id) {
-        const parsedId = parseInt(id);
-        const idx = slotsData.findIndex(s => s.id === parsedId);
-        if (idx > -1) {
-            slotsData[idx].name = document.getElementById(`name-${id}`).value.trim();
-            slotsData[idx].label1 = document.getElementById(`lbl1-${id}`).value.trim();
-            slotsData[idx].label2 = document.getElementById(`lbl2-${id}`).value.trim();
-            slotsData[idx].label3 = document.getElementById(`lbl3-${id}`).value.trim();
-            slotsData[idx].label4 = document.getElementById(`lbl4-${id}`).value.trim();
-            slotsData[idx].val1 = document.getElementById(`val1-${id}`).value.trim();
-            slotsData[idx].val2 = document.getElementById(`val2-${id}`).value.trim();
-            slotsData[idx].val3 = document.getElementById(`val3-${id}`).value.trim();
-            slotsData[idx].val4 = document.getElementById(`val4-${id}`).value.trim();
-            if (slotsData[idx].name !== '') slotsData[idx].status = 'Booked';
-            localStorage.setItem('megaSlotsData', JSON.stringify(slotsData));
-        }
-        renderSlots();
-    }
-
-    function toggleStatus(id) {
-        const parsedId = parseInt(id);
-        const idx = slotsData.findIndex(s => s.id === parsedId);
-        if (idx > -1) {
-            if (slotsData[idx].status === 'Booked') {
-                slotsData[idx].status = 'Available';
-                slotsData[idx].name = '';
-                slotsData[idx].val1 = ''; slotsData[idx].val2 = '';
-                slotsData[idx].val3 = ''; slotsData[idx].val4 = '';
-                slotsData[idx].banner = ''; slotsData[idx].avatar = '';
-                slotsData[idx].tiktok = ''; // স্লট ফ্রি করলে লিংকও মুছে যাবে
-            } else {
-                slotsData[idx].status = 'Booked';
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // ছবির সাইজ অপটিমাইজেশন (সর্বোচ্চ ৪০০ পিক্সেল চওড়া)
+                const MAX_WIDTH = 400;
+                const scale = MAX_WIDTH / img.width;
+                canvas.width = MAX_WIDTH;
+                canvas.height = img.height * scale;
+                
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                
+                // কোয়ালিটি ০.৫ এ সেট করা হয়েছে যাতে স্টোরেজ ফুল না হয়
+                const compressedBase64 = canvas.toDataURL('image/jpeg', 0.5);
+                
+                // ডিসপ্লে আপডেট
+                displayImage(id, compressedBase64);
+                
+                // লোকাল স্টোরেজে সেভ
+                localStorage.setItem(`slot_${id}_img`, compressedBase64);
             }
-            localStorage.setItem('megaSlotsData', JSON.stringify(slotsData));
+            img.src = e.target.result;
         }
-        renderSlots();
+        reader.readAsDataURL(file);
     }
 
-    // পেজ লোড হলে স্লটগুলো রেন্ডার হবে
-    renderSlots();
+    // ছবি দেখানোর ফাংশন
+    function displayImage(id, src) {
+        const placeholder = document.getElementById(`placeholder-${id}`);
+        const imgView = document.getElementById(`view-img-${id}`);
+        if(src) {
+            placeholder.style.display = 'none';
+            imgView.src = src;
+            imgView.style.display = 'block';
+        } else {
+            placeholder.style.display = 'block';
+            imgView.style.display = 'none';
+            imgView.src = '';
+        }
+    }
+
+    // টেক্সট ইনপুট (লিংক ও নম্বর) লোকাল স্টোরেজে সেভ করা
+    function saveTextData(id) {
+        const linkVal = document.getElementById(`link-${id}`).value;
+        const numVal = document.getElementById(`number-${id}`).value;
+        
+        localStorage.setItem(`slot_${id}_link`, linkVal);
+        localStorage.setItem(`slot_${id}_num`, numVal);
+    }
+
+    // লোকাল স্টোরেজ থেকে ডেটা লোড করা
+    function loadSlotData(id) {
+        const savedImg = localStorage.getItem(`slot_${id}_img`);
+        const savedLink = localStorage.getItem(`slot_${id}_link`);
+        const savedNum = localStorage.getItem(`slot_${id}_num`);
+
+        if (savedImg) displayImage(id, savedImg);
+        if (savedLink) document.getElementById(`link-${id}`).value = savedLink;
+        if (savedNum) document.getElementById(`number-${id}`).value = savedNum;
+    }
+
+    // লিংক ওপেন করা
+    function openLink(id) {
+        const url = document.getElementById(`link-${id}`).value;
+        if (url) {
+            window.open(url, '_blank');
+        } else {
+            alert('কোনো লিংক সেভ করা নেই!');
+        }
+    }
+
+    // সরাসরি WhatsApp চ্যাট ওপেন করা
+    function openWhatsApp(id) {
+        let num = document.getElementById(`number-${id}`).value;
+        if (num) {
+            // শুধুমাত্র সংখ্যাগুলো আলাদা করা
+            num = num.replace(/\D/g, '');
+            // বাংলাদেশের কান্ট্রি কোড না থাকলে যুক্ত করা
+            if (num.length === 11 && num.startsWith('01')) {
+                num = '88' + num;
+            }
+            window.open(`https://wa.me/${num}`, '_blank');
+        } else {
+            alert('কোনো নম্বর সেভ করা নেই!');
+        }
+    }
+
+    // একটি নির্দিষ্ট স্লটের সব ডেটা ক্লিয়ার করা
+    function clearSlot(id) {
+        if(confirm(`আপনি কি নিশ্চিতভাবে Slot ${id} এর সব তথ্য মুছে ফেলতে চান?`)) {
+            localStorage.removeItem(`slot_${id}_img`);
+            localStorage.removeItem(`slot_${id}_link`);
+            localStorage.removeItem(`slot_${id}_num`);
+            
+            displayImage(id, null);
+            document.getElementById(`link-${id}`).value = '';
+            document.getElementById(`number-${id}`).value = '';
+            document.getElementById(`file-${id}`).value = '';
+        }
+    }
+
+    // ট্র্যাকার রান করা
+    initTracker();
 </script>
 
 </body>
