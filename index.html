@@ -3,417 +3,458 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Slot Tracker</title>
+    <title>Premium Tracker Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #0f172a;
+            --bg-dark: #0f172a;
             --card-bg: #1e293b;
-            --text-color: #f8fafc;
-            --accent-color: #38bdf8;
-            --success-color: #22c55e;
-            --danger-color: #ef4444;
-            --warning-color: #f59e0b;
-            --border-color: #334155;
             --input-bg: #0b0f19;
+            --border-color: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --green-glow: #4ade80;
+            --btn-blue: #3b82f6;
+            --btn-green: #22c55e;
+            --btn-dark: #334155;
+            --wa-color: #25D366;
+            --danger: #ef4444;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Roboto, sans-serif;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body { background-color: var(--bg-dark); color: var(--text-main); padding: 15px; padding-top: 80px; }
+
+        /* Top Bar (Search, Voice, Language) */
+        .top-bar {
+            position: fixed; top: 0; left: 0; right: 0; background: var(--card-bg);
+            padding: 15px 20px; display: flex; gap: 10px; align-items: center; justify-content: center;
+            border-bottom: 1px solid var(--border-color); z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            padding: 20px;
+        .search-box {
+            display: flex; background: var(--input-bg); border: 1px solid var(--border-color);
+            border-radius: 20px; overflow: hidden; flex: 1; max-width: 400px;
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
+        .search-box input {
+            flex: 1; background: transparent; border: none; padding: 10px 15px;
+            color: white; outline: none;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid var(--border-color);
+        .voice-btn, .lang-btn {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 10px 15px; cursor: pointer; transition: 0.2s; font-size: 1.1rem;
         }
+        .voice-btn:hover { color: var(--btn-blue); }
+        .voice-recording { color: var(--danger) !important; animation: pulse 1s infinite; }
 
-        header h1 {
-            color: var(--accent-color);
-            font-size: 2rem;
-            margin-bottom: 5px;
-        }
+        .lang-btn { background: var(--btn-dark); border-radius: 8px; color: white; font-weight: bold; font-size: 0.9rem;}
 
-        .slots-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
-        }
+        /* Slots Grid */
+        .slots-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 25px; max-width: 1200px; margin: 0 auto; }
 
+        /* Card Design exactly like screenshot */
         .slot-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.2);
+            background-color: var(--card-bg); border: 2px solid var(--green-glow);
+            border-radius: 12px; overflow: hidden; position: relative;
         }
 
-        /* Editable Slot Name */
-        .slot-name-input {
-            width: 100%;
-            background: transparent;
-            border: none;
-            border-bottom: 1px dashed var(--border-color);
-            color: var(--accent-color);
-            font-size: 1.2rem;
-            font-weight: bold;
-            padding: 5px 0;
-            outline: none;
+        .cover-photo {
+            width: 100%; height: 120px; background-color: #333; cursor: pointer;
+            position: relative; border-bottom: 2px solid var(--border-color);
         }
-        .slot-name-input:focus {
-            border-bottom-color: var(--accent-color);
+        .cover-photo img { width: 100%; height: 100%; object-fit: cover; }
+        .upload-hint { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); font-size: 0.8rem; pointer-events: none;}
+
+        .profile-photo {
+            width: 70px; height: 70px; border-radius: 50%; background-color: #222;
+            border: 3px solid var(--card-bg); position: absolute; top: 85px; left: 15px;
+            cursor: pointer; overflow: hidden; z-index: 10;
         }
+        .profile-photo img { width: 100%; height: 100%; object-fit: cover; }
 
-        .image-box {
-            width: 100%;
-            height: 160px;
-            background-color: var(--input-bg);
-            border: 2px dashed #475569;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            position: relative;
-            cursor: pointer;
-        }
+        .card-body { padding: 15px; padding-top: 45px; display: flex; flex-direction: column; gap: 15px; }
 
-        .image-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        /* Slot Header Row */
+        .slot-header { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .slot-title { font-size: 1.2rem; font-weight: bold; }
+        .link-group { display: flex; flex: 1; background: var(--input-bg); border-radius: 6px; overflow: hidden; border: 1px solid var(--border-color); }
+        .link-group input { background: transparent; border: none; padding: 6px 10px; color: white; width: 100%; outline: none; }
+        .link-group button { background: var(--btn-blue); border: none; color: white; padding: 0 12px; cursor: pointer; font-size: 0.8rem; }
+        .status-badge { background: var(--btn-dark); color: var(--green-glow); padding: 5px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: bold; cursor: pointer; }
+        .status-badge.booked { color: var(--danger); }
 
-        .image-placeholder {
-            color: #64748b;
-            font-size: 0.85rem;
-            text-align: center;
-            padding: 10px;
-        }
+        /* Form Inputs */
+        .input-group { display: flex; flex-direction: column; gap: 5px; }
+        .input-group label { font-size: 0.85rem; color: var(--text-muted); }
+        .input-box { background: var(--input-bg); border: 1px solid var(--border-color); padding: 10px; border-radius: 6px; color: white; width: 100%; outline: none; }
+        .input-box:focus { border-color: var(--green-glow); }
 
-        .file-input { display: none; }
+        /* Grid for 2 columns */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
+        /* WhatsApp Section */
+        .wa-group { display: flex; gap: 10px; }
+        .wa-btn { background: var(--wa-color); border: none; color: white; width: 40px; border-radius: 6px; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
 
-        .input-group label {
-            font-size: 0.8rem;
-            color: #94a3b8;
-            font-weight: 500;
-        }
+        /* Live Tracker Text */
+        .live-track { font-size: 0.8rem; color: var(--green-glow); text-align: right; margin-top: -10px; font-weight: bold; }
+        .live-track.due { color: var(--danger); }
 
-        .input-wrapper {
-            display: flex;
-            gap: 6px;
-        }
+        /* Bottom Buttons */
+        .action-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
+        .btn-save { background: var(--btn-green); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .btn-book { background: var(--btn-dark); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
-        input[type="text"], input[type="tel"], input[type="number"] {
-            flex: 1;
-            padding: 8px 10px;
-            background-color: var(--input-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            color: var(--text-color);
-            font-size: 0.85rem;
-            outline: none;
-            transition: 0.2s;
-        }
+        input[type="file"] { display: none; }
 
-        input:focus { border-color: var(--accent-color); }
-
-        .btn {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            color: white;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            transition: 0.2s;
-        }
-
-        .btn:hover { opacity: 0.8; }
-        .btn-action { background-color: var(--accent-color); }
-        .btn-wa { background-color: #25D366; font-size: 1.1rem; padding: 8px 15px;}
-        .btn-danger { background-color: var(--danger-color); width: 100%; margin-top: 5px;}
-
-        /* Tracker Section */
-        .tracker-box {
-            background-color: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 10px;
-            margin-top: 5px;
-        }
-
-        .tracker-title {
-            font-size: 0.8rem;
-            color: #cbd5e1;
-            margin-bottom: 8px;
-            font-weight: bold;
-            text-align: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 4px;
-        }
-
-        .tracker-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        .tracker-result {
-            font-size: 0.85rem;
-            background-color: var(--input-bg);
-            padding: 6px;
-            border-radius: 4px;
-            text-align: center;
-            color: #e2e8f0;
-        }
-
-        .highlight-money { color: var(--warning-color); font-weight: bold; font-size: 1rem;}
-        .highlight-view { color: var(--accent-color); font-weight: bold; font-size: 1rem;}
-
-        /* Hide Number Arrows */
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { 
-            -webkit-appearance: none; 
-            margin: 0; 
-        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>Slot Tracker Pro Max</h1>
-        <p>লাইভ হিসাব, ভিউ ট্র্যাকিং, ছবি, লিংক এবং হোয়াটসঅ্যাপ প্যানেল</p>
-    </header>
-
-    <div class="slots-grid" id="slotsContainer">
+    <div class="top-bar">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="ইউজার বা নাম্বার খুঁজুন..." oninput="searchSlots()">
+            <button class="voice-btn" id="voiceBtn" onclick="startVoiceSearch()"><i class="fas fa-microphone"></i></button>
         </div>
-</div>
+        <button class="lang-btn" id="langToggle" onclick="toggleLanguage()">EN</button>
+    </div>
+
+    <div class="slots-container" id="slotsContainer">
+        </div>
 
 <script>
-    const TOTAL_SLOTS = 16; // স্লটের সংখ্যা
-    const slotsContainer = document.getElementById('slotsContainer');
+    const TOTAL_SLOTS = 10; // কতগুলো স্লট চান এখানে সেট করুন
+    let currentLang = 'bn';
 
-    function initTracker() {
-        for (let i = 1; i <= TOTAL_SLOTS; i++) {
-            createSlotCard(i);
-            loadSlotData(i);
+    const textDict = {
+        bn: {
+            search: "ইউজার বা নাম্বার খুঁজুন...",
+            slot: "Slot",
+            linkPlaceholder: "Add Link...",
+            saveBtnSmall: "Save",
+            statusFree: "ফ্রি",
+            statusBooked: "বুক",
+            userName: "ইউজার নেম",
+            waNumber: "হোয়াটসঅ্যাপ নাম্বার",
+            totalMoney: "মোট টাকা",
+            advance: "অ্যাডভান্স পেমেন্ট",
+            dueMoney: "বাকি টাকা",
+            targetView: "টার্গেট ভিউ",
+            givenView: "দেওয়া ভিউ",
+            remainingView: "বাকি ভিউ",
+            saveBtn: "সেভ",
+            bookBtn: "বুক করুন"
+        },
+        en: {
+            search: "Search user or number...",
+            slot: "Slot",
+            linkPlaceholder: "Add Link...",
+            saveBtnSmall: "Save",
+            statusFree: "Free",
+            statusBooked: "Booked",
+            userName: "User Name",
+            waNumber: "WhatsApp Number",
+            totalMoney: "Total Money",
+            advance: "Advance Payment",
+            dueMoney: "Due Money",
+            targetView: "Target View",
+            givenView: "Given View",
+            remainingView: "Remaining View",
+            saveBtn: "Save",
+            bookBtn: "Book"
         }
+    };
+
+    function init() {
+        const container = document.getElementById('slotsContainer');
+        container.innerHTML = '';
+        for (let i = 1; i <= TOTAL_SLOTS; i++) {
+            container.innerHTML += createSlotHTML(i);
+        }
+        for (let i = 1; i <= TOTAL_SLOTS; i++) {
+            loadData(i);
+        }
+        updateLanguageUI();
     }
 
-    function createSlotCard(id) {
-        const card = document.createElement('div');
-        card.className = 'slot-card';
-        card.innerHTML = `
-            <input type="text" class="slot-name-input" id="name-${id}" placeholder="স্লটের নাম লিখুন (যেমন: Slot ${id})" oninput="saveData(${id})">
-            
-            <div class="image-box" onclick="document.getElementById('file-${id}').click()">
-                <div class="image-placeholder" id="placeholder-${id}">📸 ক্লিক করে ছবি আপলোড করুন</div>
-                <img id="view-img-${id}" style="display:none;" src="" alt="Slot Image">
+    function createSlotHTML(id) {
+        return `
+        <div class="slot-card" id="card-${id}">
+            <div class="cover-photo" onclick="document.getElementById('cover-upload-${id}').click()">
+                <div class="upload-hint">Cover Photo</div>
+                <img id="cover-img-${id}" src="" style="display:none;">
             </div>
-            <input type="file" id="file-${id}" class="file-input" accept="image/*" onchange="uploadAndCompress(event, ${id})">
-            
-            <div class="input-group">
-                <label>লিংক / ইউআরএল:</label>
-                <div class="input-wrapper">
-                    <input type="text" id="link-${id}" placeholder="https://..." oninput="saveData(${id})">
-                    <button class="btn btn-action" onclick="openLink(${id})">Open</button>
+            <input type="file" id="cover-upload-${id}" accept="image/*" onchange="handleImage(event, 'cover', ${id})">
+
+            <div class="profile-photo" onclick="document.getElementById('profile-upload-${id}').click()">
+                <div class="upload-hint" style="font-size:0.6rem;">Profile</div>
+                <img id="profile-img-${id}" src="" style="display:none;">
+            </div>
+            <input type="file" id="profile-upload-${id}" accept="image/*" onchange="handleImage(event, 'profile', ${id})">
+
+            <div class="card-body">
+                <div class="slot-header">
+                    <div class="slot-title"><span class="lang-slot">Slot</span> ${id}</div>
+                    <div class="link-group">
+                        <input type="text" id="link-${id}" class="lang-linkPlaceholder" placeholder="Add Link..." oninput="autoSave(${id})">
+                        <button onclick="openLink(${id})" class="lang-saveBtnSmall">Open</button>
+                    </div>
+                    <div class="status-badge" id="status-${id}" onclick="toggleStatus(${id})">ফ্রি</div>
+                </div>
+
+                <div class="input-group">
+                    <label class="lang-userName">ইউজার নেম</label>
+                    <input type="text" class="input-box user-name-input" id="name-${id}" placeholder="..." oninput="autoSave(${id})">
+                </div>
+
+                <div class="input-group">
+                    <label class="lang-waNumber">হোয়াটসঅ্যাপ নাম্বার</label>
+                    <div class="wa-group">
+                        <input type="tel" class="input-box wa-number-input" id="wa-${id}" placeholder="017..." oninput="autoSave(${id})">
+                        <button class="wa-btn" onclick="openWA(${id})"><i class="fab fa-whatsapp"></i></button>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label class="lang-totalMoney">মোট টাকা</label>
+                        <input type="number" class="input-box" id="t-money-${id}" value="0" oninput="calcMoney(${id})">
+                    </div>
+                    <div class="input-group">
+                        <label class="lang-advance">অ্যাডভান্স পেমেন্ট</label>
+                        <input type="number" class="input-box" id="a-money-${id}" value="0" oninput="calcMoney(${id})">
+                    </div>
+                </div>
+                <div class="live-track due"><span class="lang-dueMoney">বাকি টাকা</span>: <span id="due-money-${id}">0</span></div>
+
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label class="lang-targetView">টার্গেট ভিউ</label>
+                        <input type="number" class="input-box" id="t-view-${id}" value="0" oninput="calcView(${id})">
+                    </div>
+                    <div class="input-group">
+                        <label class="lang-givenView">দেওয়া ভিউ</label>
+                        <input type="number" class="input-box" id="g-view-${id}" value="0" oninput="calcView(${id})">
+                    </div>
+                </div>
+                <div class="live-track"><span class="lang-remainingView">বাকি ভিউ</span>: <span id="due-view-${id}">0</span></div>
+
+                <div class="action-btns">
+                    <button class="btn-save lang-saveBtn" onclick="manualSave(${id})">সেভ</button>
+                    <button class="btn-book lang-bookBtn" onclick="clearSlot(${id})">রিসেট</button>
                 </div>
             </div>
-
-            <div class="input-group">
-                <label>অ্যাকাউন্ট / WhatsApp নম্বর:</label>
-                <div class="input-wrapper">
-                    <input type="tel" id="number-${id}" placeholder="নম্বর লিখুন..." oninput="saveData(${id})">
-                    <button class="btn btn-wa" onclick="openWhatsApp(${id})" title="হোয়াটসঅ্যাপে মেসেজ দিন"><i class="fab fa-whatsapp"></i></button>
-                </div>
-            </div>
-
-            <div class="tracker-box">
-                <div class="tracker-title">টাকা / পেমেন্ট হিসাব</div>
-                <div class="tracker-grid">
-                    <input type="number" id="target-money-${id}" placeholder="টার্গেট (৳)" oninput="calcMoney(${id})">
-                    <input type="number" id="paid-money-${id}" placeholder="জমা (৳)" oninput="calcMoney(${id})">
-                </div>
-                <div class="tracker-result">বাকি আছে: <span id="due-money-${id}" class="highlight-money">0</span> ৳</div>
-            </div>
-
-            <div class="tracker-box">
-                <div class="tracker-title">ভিডিও ভিউ ট্র্যাকিং</div>
-                <div class="tracker-grid">
-                    <input type="number" id="target-view-${id}" placeholder="টার্গেট ভিউ" oninput="calcViews(${id})">
-                    <input type="number" id="current-view-${id}" placeholder="বর্তমান ভিউ" oninput="calcViews(${id})">
-                </div>
-                <div class="tracker-result">বাকি ভিউ: <span id="due-view-${id}" class="highlight-view">0</span></div>
-            </div>
-
-            <button class="btn btn-danger" onclick="clearSlot(${id})">Clear All Data</button>
+        </div>
         `;
-        slotsContainer.appendChild(card);
     }
 
-    // ইমেজ আপলোড
-    function uploadAndCompress(event, id) {
+    // Image Compressor & Uploader
+    function handleImage(event, type, id) {
         const file = event.target.files[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onload = function(e) {
             const img = new Image();
             img.onload = function() {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
-                const MAX_WIDTH = 400;
+                const MAX_WIDTH = type === 'cover' ? 600 : 150; // Cover vs Profile size
                 const scale = MAX_WIDTH / img.width;
                 canvas.width = MAX_WIDTH;
                 canvas.height = img.height * scale;
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                const compressedBase64 = canvas.toDataURL('image/jpeg', 0.5);
+                const base64 = canvas.toDataURL('image/jpeg', 0.6);
                 
-                displayImage(id, compressedBase64);
-                localStorage.setItem(`slot_${id}_img`, compressedBase64);
+                document.getElementById(`${type}-img-${id}`).src = base64;
+                document.getElementById(`${type}-img-${id}`).style.display = 'block';
+                localStorage.setItem(`slot_${id}_${type}`, base64);
             }
             img.src = e.target.result;
         }
         reader.readAsDataURL(file);
     }
 
-    function displayImage(id, src) {
-        const placeholder = document.getElementById(`placeholder-${id}`);
-        const imgView = document.getElementById(`view-img-${id}`);
-        if(src) {
-            placeholder.style.display = 'none';
-            imgView.src = src;
-            imgView.style.display = 'block';
-        } else {
-            placeholder.style.display = 'block';
-            imgView.style.display = 'none';
-            imgView.src = '';
-        }
-    }
-
-    // হিসাব নিকাশ লাইভ আপডেট ও সেভ করা (টাকা)
+    // Live Calculations
     function calcMoney(id) {
-        let target = parseFloat(document.getElementById(`target-money-${id}`).value) || 0;
-        let paid = parseFloat(document.getElementById(`paid-money-${id}`).value) || 0;
-        let due = target - paid;
-        
-        document.getElementById(`due-money-${id}`).innerText = due;
-        saveData(id); // অটো সেভ
+        const total = parseFloat(document.getElementById(`t-money-${id}`).value) || 0;
+        const advance = parseFloat(document.getElementById(`a-money-${id}`).value) || 0;
+        document.getElementById(`due-money-${id}`).innerText = total - advance;
+        autoSave(id);
     }
 
-    // হিসাব নিকাশ লাইভ আপডেট ও সেভ করা (ভিউ)
-    function calcViews(id) {
-        let target = parseFloat(document.getElementById(`target-view-${id}`).value) || 0;
-        let current = parseFloat(document.getElementById(`current-view-${id}`).value) || 0;
-        let due = target - current;
-        
-        document.getElementById(`due-view-${id}`).innerText = due;
-        saveData(id); // অটো সেভ
+    function calcView(id) {
+        const target = parseFloat(document.getElementById(`t-view-${id}`).value) || 0;
+        const given = parseFloat(document.getElementById(`g-view-${id}`).value) || 0;
+        document.getElementById(`due-view-${id}`).innerText = target - given;
+        autoSave(id);
     }
 
-    // সব ডাটা একসাথে সেভ করা
-    function saveData(id) {
-        localStorage.setItem(`slot_${id}_name`, document.getElementById(`name-${id}`).value);
+    // Data Management
+    function autoSave(id) {
         localStorage.setItem(`slot_${id}_link`, document.getElementById(`link-${id}`).value);
-        localStorage.setItem(`slot_${id}_num`, document.getElementById(`number-${id}`).value);
-        
-        localStorage.setItem(`slot_${id}_tMoney`, document.getElementById(`target-money-${id}`).value);
-        localStorage.setItem(`slot_${id}_pMoney`, document.getElementById(`paid-money-${id}`).value);
-        
-        localStorage.setItem(`slot_${id}_tView`, document.getElementById(`target-view-${id}`).value);
-        localStorage.setItem(`slot_${id}_cView`, document.getElementById(`current-view-${id}`).value);
+        localStorage.setItem(`slot_${id}_name`, document.getElementById(`name-${id}`).value);
+        localStorage.setItem(`slot_${id}_wa`, document.getElementById(`wa-${id}`).value);
+        localStorage.setItem(`slot_${id}_tm`, document.getElementById(`t-money-${id}`).value);
+        localStorage.setItem(`slot_${id}_am`, document.getElementById(`a-money-${id}`).value);
+        localStorage.setItem(`slot_${id}_tv`, document.getElementById(`t-view-${id}`).value);
+        localStorage.setItem(`slot_${id}_gv`, document.getElementById(`g-view-${id}`).value);
     }
 
-    // লোড ডাটা
-    function loadSlotData(id) {
-        const img = localStorage.getItem(`slot_${id}_img`);
-        if (img) displayImage(id, img);
+    function manualSave(id) {
+        autoSave(id);
+        alert(`Slot ${id} সফলভাবে সেভ হয়েছে!`);
+    }
 
-        document.getElementById(`name-${id}`).value = localStorage.getItem(`slot_${id}_name`) || '';
+    function loadData(id) {
+        const cover = localStorage.getItem(`slot_${id}_cover`);
+        const profile = localStorage.getItem(`slot_${id}_profile`);
+        if(cover) { document.getElementById(`cover-img-${id}`).src = cover; document.getElementById(`cover-img-${id}`).style.display = 'block'; }
+        if(profile) { document.getElementById(`profile-img-${id}`).src = profile; document.getElementById(`profile-img-${id}`).style.display = 'block'; }
+
         document.getElementById(`link-${id}`).value = localStorage.getItem(`slot_${id}_link`) || '';
-        document.getElementById(`number-${id}`).value = localStorage.getItem(`slot_${id}_num`) || '';
+        document.getElementById(`name-${id}`).value = localStorage.getItem(`slot_${id}_name`) || '';
+        document.getElementById(`wa-${id}`).value = localStorage.getItem(`slot_${id}_wa`) || '';
+        document.getElementById(`t-money-${id}`).value = localStorage.getItem(`slot_${id}_tm`) || '0';
+        document.getElementById(`a-money-${id}`).value = localStorage.getItem(`slot_${id}_am`) || '0';
+        document.getElementById(`t-view-${id}`).value = localStorage.getItem(`slot_${id}_tv`) || '0';
+        document.getElementById(`g-view-${id}`).value = localStorage.getItem(`slot_${id}_gv`) || '0';
         
-        document.getElementById(`target-money-${id}`).value = localStorage.getItem(`slot_${id}_tMoney`) || '';
-        document.getElementById(`paid-money-${id}`).value = localStorage.getItem(`slot_${id}_pMoney`) || '';
-        
-        document.getElementById(`target-view-${id}`).value = localStorage.getItem(`slot_${id}_tView`) || '';
-        document.getElementById(`current-view-${id}`).value = localStorage.getItem(`slot_${id}_cView`) || '';
+        // Load Status
+        const status = localStorage.getItem(`slot_${id}_status`) || 'free';
+        updateStatusUI(id, status);
 
-        // ভ্যালু বসানোর পর লাইভ হিসাবটা আবার আপডেট করা
         calcMoney(id);
-        calcViews(id);
-    }
-
-    function openLink(id) {
-        const url = document.getElementById(`link-${id}`).value;
-        if (url) window.open(url, '_blank');
-        else alert('কোনো লিংক সেভ করা নেই!');
-    }
-
-    function openWhatsApp(id) {
-        let num = document.getElementById(`number-${id}`).value;
-        if (num) {
-            num = num.replace(/\D/g, '');
-            if (num.length === 11 && num.startsWith('01')) num = '88' + num;
-            window.open(`https://wa.me/${num}`, '_blank');
-        } else {
-            alert('কোনো নম্বর সেভ করা নেই!');
-        }
+        calcView(id);
     }
 
     function clearSlot(id) {
-        if(confirm(`সব ডাটা মুছে ফেলতে চান?`)) {
-            // Remove from local storage
-            const keys = ['img', 'name', 'link', 'num', 'tMoney', 'pMoney', 'tView', 'cView'];
+        if(confirm("এই স্লটের সব ডাটা রিসেট করতে চান?")) {
+            const keys = ['cover', 'profile', 'link', 'name', 'wa', 'tm', 'am', 'tv', 'gv', 'status'];
             keys.forEach(k => localStorage.removeItem(`slot_${id}_${k}`));
             
-            // Clear inputs
-            displayImage(id, null);
-            document.getElementById(`name-${id}`).value = '';
+            document.getElementById(`cover-img-${id}`).style.display = 'none';
+            document.getElementById(`profile-img-${id}`).style.display = 'none';
             document.getElementById(`link-${id}`).value = '';
-            document.getElementById(`number-${id}`).value = '';
-            document.getElementById(`target-money-${id}`).value = '';
-            document.getElementById(`paid-money-${id}`).value = '';
-            document.getElementById(`target-view-${id}`).value = '';
-            document.getElementById(`current-view-${id}`).value = '';
-            
-            calcMoney(id);
-            calcViews(id);
+            document.getElementById(`name-${id}`).value = '';
+            document.getElementById(`wa-${id}`).value = '';
+            document.getElementById(`t-money-${id}`).value = '0';
+            document.getElementById(`a-money-${id}`).value = '0';
+            document.getElementById(`t-view-${id}`).value = '0';
+            document.getElementById(`g-view-${id}`).value = '0';
+            updateStatusUI(id, 'free');
+            calcMoney(id); calcView(id);
         }
     }
 
-    initTracker();
+    // Status Toggle (Free/Booked)
+    function toggleStatus(id) {
+        let current = localStorage.getItem(`slot_${id}_status`) || 'free';
+        let newStatus = current === 'free' ? 'booked' : 'free';
+        localStorage.setItem(`slot_${id}_status`, newStatus);
+        updateStatusUI(id, newStatus);
+    }
+
+    function updateStatusUI(id, status) {
+        const badge = document.getElementById(`status-${id}`);
+        if(status === 'booked') {
+            badge.classList.add('booked');
+            badge.innerText = textDict[currentLang].statusBooked;
+        } else {
+            badge.classList.remove('booked');
+            badge.innerText = textDict[currentLang].statusFree;
+        }
+    }
+
+    // External Links
+    function openLink(id) {
+        const url = document.getElementById(`link-${id}`).value;
+        if(url) window.open(url, '_blank');
+        else alert("কোনো লিংক দেওয়া নেই!");
+    }
+
+    function openWA(id) {
+        let num = document.getElementById(`wa-${id}`).value.replace(/\D/g, '');
+        if(num) {
+            if (num.length === 11 && num.startsWith('01')) num = '88' + num;
+            window.open(`https://wa.me/${num}`, '_blank');
+        } else alert("হোয়াটসঅ্যাপ নাম্বার দেওয়া নেই!");
+    }
+
+    // Search Functionality
+    function searchSlots() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        for(let i=1; i<=TOTAL_SLOTS; i++) {
+            const name = document.getElementById(`name-${i}`).value.toLowerCase();
+            const wa = document.getElementById(`wa-${i}`).value.toLowerCase();
+            const card = document.getElementById(`card-${i}`);
+            if(name.includes(query) || wa.includes(query)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        }
+    }
+
+    // Voice Search Assistant
+    function startVoiceSearch() {
+        if (!('webkitSpeechRecognition' in window)) {
+            alert("আপনার ব্রাউজার ভয়েস সার্চ সাপোর্ট করে না। Google Chrome ব্যবহার করুন।");
+            return;
+        }
+        const recognition = new webkitSpeechRecognition();
+        recognition.lang = currentLang === 'bn' ? 'bn-BD' : 'en-US';
+        const btn = document.getElementById('voiceBtn');
+        
+        recognition.onstart = function() {
+            btn.classList.add('voice-recording');
+        };
+        recognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            document.getElementById('searchInput').value = transcript;
+            searchSlots();
+        };
+        recognition.onend = function() {
+            btn.classList.remove('voice-recording');
+        };
+        recognition.start();
+    }
+
+    // Language Toggle
+    function toggleLanguage() {
+        currentLang = currentLang === 'bn' ? 'en' : 'bn';
+        document.getElementById('langToggle').innerText = currentLang === 'bn' ? 'EN' : 'BN';
+        updateLanguageUI();
+    }
+
+    function updateLanguageUI() {
+        const dict = textDict[currentLang];
+        document.getElementById('searchInput').placeholder = dict.search;
+        
+        for(let i=1; i<=TOTAL_SLOTS; i++) {
+            document.querySelector(`#card-${i} .lang-slot`).innerText = dict.slot;
+            document.querySelector(`#link-${i}`).placeholder = dict.linkPlaceholder;
+            document.querySelector(`#card-${i} .lang-saveBtnSmall`).innerText = dict.saveBtnSmall;
+            document.querySelector(`#card-${i} .lang-userName`).innerText = dict.userName;
+            document.querySelector(`#card-${i} .lang-waNumber`).innerText = dict.waNumber;
+            document.querySelector(`#card-${i} .lang-totalMoney`).innerText = dict.totalMoney;
+            document.querySelector(`#card-${i} .lang-advance`).innerText = dict.advance;
+            document.querySelector(`#card-${i} .lang-dueMoney`).innerText = dict.dueMoney;
+            document.querySelector(`#card-${i} .lang-targetView`).innerText = dict.targetView;
+            document.querySelector(`#card-${i} .lang-givenView`).innerText = dict.givenView;
+            document.querySelector(`#card-${i} .lang-remainingView`).innerText = dict.remainingView;
+            document.querySelector(`#card-${i} .lang-saveBtn`).innerText = dict.saveBtn;
+            document.querySelector(`#card-${i} .lang-bookBtn`).innerText = dict.bookBtn;
+            
+            const status = localStorage.getItem(`slot_${i}_status`) || 'free';
+            updateStatusUI(i, status);
+        }
+    }
+
+    // Initialize the App
+    window.onload = init;
 </script>
 
 </body>
