@@ -201,9 +201,60 @@
         input[type="number"]::-webkit-inner-spin-button, input[type="number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
         @keyframes blink { 50% { opacity: 0.3; } }
+
+        /* ================= NEW FEATURES CSS ================= */
+        
+        /* Private Vault */
+        #vaultOverlay { position: fixed; inset: 0; background: #050505; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .vault-box { background: var(--card-bg); padding: 30px; border-radius: 15px; border: 2px solid var(--border-color); text-align: center; box-shadow: 0 0 30px var(--shadow-color); }
+        .vault-box h2 { color: var(--green-glow); margin-bottom: 20px; }
+        .vault-input { background: var(--input-bg); border: 1px solid var(--border-color); color: white; padding: 12px; border-radius: 8px; font-size: 1.2rem; text-align: center; outline: none; margin-bottom: 15px; width: 100%; }
+        .vault-input:focus { border-color: var(--green-glow); }
+        .vault-btn { background: var(--green-glow); color: black; border: none; padding: 12px 25px; font-size: 1.1rem; font-weight: bold; border-radius: 8px; cursor: pointer; width: 100%; transition: 0.3s; }
+        .vault-btn:hover { background: white; }
+
+        /* AI Chat Box */
+        .ai-fab { position: fixed; right: 20px; bottom: 85px; width: 55px; height: 55px; border-radius: 50%; background: var(--green-glow); color: black; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; cursor: pointer; z-index: 1999; box-shadow: 0 0 15px var(--green-glow); border: none; transition: 0.3s; }
+        .ai-fab:hover { transform: scale(1.1); background: white; }
+        
+        .ai-chat-box { position: fixed; right: 20px; bottom: 150px; width: 320px; background: rgba(30, 41, 59, 0.95); border: 1px solid var(--green-glow); border-radius: 12px; padding: 15px; z-index: 2000; display: none; box-shadow: 0 5px 20px rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
+        .ai-header { display: flex; justify-content: space-between; color: var(--green-glow); font-weight: bold; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 10px; }
+        .ai-close { cursor: pointer; color: var(--danger); }
+        .ai-response-area { height: 200px; overflow-y: auto; color: white; font-size: 0.9rem; margin-bottom: 10px; padding-right: 5px; display: flex; flex-direction: column; gap: 8px;}
+        .ai-msg { background: var(--input-bg); padding: 8px; border-radius: 8px; border-left: 3px solid var(--green-glow); }
+        .user-msg { background: var(--btn-dark); padding: 8px; border-radius: 8px; text-align: right; border-right: 3px solid var(--btn-blue); }
+        
+        .ai-input-group { display: flex; gap: 5px; }
+        .ai-input-group input { flex: 1; background: #000; border: 1px solid var(--border-color); padding: 10px; color: white; border-radius: 6px; outline: none; }
+        .ai-input-group button { background: var(--btn-blue); color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+
     </style>
 </head>
 <body>
+
+    <div id="vaultOverlay">
+        <div class="vault-box">
+            <h2><i class="fas fa-lock"></i> Private Vault</h2>
+            <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">To access the notebook, please enter your PIN.</p>
+            <input type="password" id="vaultInput" class="vault-input" placeholder="Enter PIN (1111)">
+            <button class="vault-btn" onclick="unlockVault()">Unlock Notebook</button>
+        </div>
+    </div>
+
+    <button class="ai-fab" onclick="toggleAI()"><i class="fas fa-robot"></i></button>
+    <div class="ai-chat-box" id="aiChatBox">
+        <div class="ai-header">
+            <span><i class="fas fa-brain"></i> AI Assistant</span>
+            <span class="ai-close" onclick="toggleAI()"><i class="fas fa-times"></i></span>
+        </div>
+        <div class="ai-response-area" id="aiResponseArea">
+            <div class="ai-msg">হ্যালো স্যার! আমি আপনার নোটবুক অ্যানালাইসিস করছি। কি জানতে চান?</div>
+        </div>
+        <div class="ai-input-group">
+            <input type="text" id="aiQuery" placeholder="Ask AI...">
+            <button onclick="askAI()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
 
     <div id="loader">
         <img src="1000028553.jpg" alt="Loader">
@@ -249,6 +300,63 @@
     </div>
 
 <script>
+    // --- NEW SYSTEM: Vault & Theme Setup ---
+    function unlockVault() {
+        let pass = document.getElementById('vaultInput').value;
+        if(pass === "1111") {
+            document.getElementById('vaultOverlay').style.display = 'none';
+        } else {
+            alert("❌ ভুল পাসওয়ার্ড! সঠিক পিন দিন।");
+        }
+    }
+
+    function autoDynamicTheme() {
+        const hour = new Date().getHours();
+        // সন্ধ্যা ৬টা থেকে সকাল ৬টা পর্যন্ত অটো ডার্ক/প্রিমিয়াম থিম
+        if (hour >= 18 || hour < 6) {
+            document.body.classList.add('premium-theme');
+            let modeTxt = document.querySelector('.lang-modeTxt');
+            if(modeTxt) modeTxt.innerText = "Premium (Auto)";
+        }
+    }
+
+    // --- NEW SYSTEM: AI Assistant ---
+    function toggleAI() {
+        let box = document.getElementById('aiChatBox');
+        box.style.display = (box.style.display === 'none' || box.style.display === '') ? 'block' : 'none';
+    }
+
+    function askAI() {
+        let input = document.getElementById('aiQuery').value;
+        let respBox = document.getElementById('aiResponseArea');
+        if(!input.trim()) return;
+        
+        // User Message
+        respBox.innerHTML += `<div class='user-msg'>${input}</div>`;
+        document.getElementById('aiQuery').value = '';
+        respBox.scrollTop = respBox.scrollHeight;
+        
+        // AI Response Logic (Simulated)
+        setTimeout(() => {
+            let totalSlots = getActiveArray().length;
+            let totalDue = document.getElementById('grandTotalDue').innerText;
+            
+            let aiText = "আমি আপনার নোটগুলো বিশ্লেষণ করছি... এই ফিচারটি ফুললি কানেক্টেড হলে বিস্তারিত বলবে।";
+            
+            if(input.toLowerCase().includes("সারাংশ") || input.includes("হিসাব")) {
+                aiText = `আপনার মোট স্লট আছে ${totalSlots} টি এবং আপনার মোট বাকি টাকা ${totalDue} ৳। ড্যাশবোর্ড আপডেট করা হয়েছে।`;
+            } else if(input.toLowerCase().includes("আইডিয়া") || input.includes("idea")) {
+                aiText = "💡 <b>AI Idea:</b> আপনার কাজের স্পিড বাড়াতে আপনি ভয়েস কমান্ড দিয়ে অটোমেটিক ডাটা ইনপুট করার সিস্টেম অ্যাড করতে পারেন।";
+            }
+            
+            respBox.innerHTML += `<div class='ai-msg'>${aiText}</div>`;
+            respBox.scrollTop = respBox.scrollHeight;
+        }, 800);
+    }
+
+
+    // ================= ORIGINAL LOGIC =================
+
     // System Loader
     window.onload = function() {
         setTimeout(() => {
@@ -256,15 +364,16 @@
             loader.style.opacity = '0';
             setTimeout(() => loader.style.display = 'none', 500);
         }, 1000);
+        
+        autoDynamicTheme(); // Trigger dynamic time based theme
         init();
     };
 
     let currentMode = localStorage.getItem('app_mode') || 'normal';
     let normalSlots = JSON.parse(localStorage.getItem('normalSlots')) || [generateId()];
     let currentLang = 'bn';
-    let countdownTimers = {}; // Store timer intervals
+    let countdownTimers = {};
 
-    // Premium Color Palette (30 Colors)
     const premiumColors = [
         '#4ade80', '#f87171', '#60a5fa', '#c084fc', '#facc15', '#2dd4bf', '#fb923c', '#a3e635', 
         '#38bdf8', '#818cf8', '#f472b6', '#fb7185', '#34d399', '#22d3ee', '#8b5cf6', '#d946ef', 
@@ -302,7 +411,6 @@
         updateUI();
     }
 
-    // Cycle Premium Theme Colors
     function cycleThemeMode() {
         colorIndex = (colorIndex + 1) % premiumColors.length;
         localStorage.setItem('themeColorIndex', colorIndex);
@@ -310,9 +418,7 @@
     }
 
     function applyTheme() {
-        // Change accent color dynamically
         document.documentElement.style.setProperty('--green-glow', premiumColors[colorIndex]);
-        // Visual button effect
         document.getElementById('modeBtn').style.boxShadow = `0 0 15px ${premiumColors[colorIndex]}`;
     }
 
@@ -324,14 +430,13 @@
         activeArray.forEach((id, index) => {
             container.insertAdjacentHTML('beforeend', createSlotHTML(id, index + 1));
             loadSlotData(id);
-            lockSlotInputs(id, true); // Lock all by default
+            lockSlotInputs(id, true);
         });
         
         calcGlobalTotals();
         updateBookedList();
     }
 
-    // HTML Template (Added Password Delete, Timer, Edit Lock logic)
     function createSlotHTML(id, displayNum) {
         return `
         <div class="slot-card" id="card-${id}">
@@ -422,7 +527,6 @@
         `;
     }
 
-    // Edit and Lock System
     function lockSlotInputs(id, lockStatus) {
         let card = document.getElementById(`card-${id}`);
         if(!card) return;
@@ -442,10 +546,9 @@
     function toggleEditMode(id) {
         let nameInput = document.getElementById(`name-${id}`);
         let isCurrentlyLocked = nameInput.disabled;
-        lockSlotInputs(id, !isCurrentlyLocked); // Toggle state
+        lockSlotInputs(id, !isCurrentlyLocked); 
     }
 
-    // Dynamic Field Adder
     function addField(id, type, val = '') {
         const grid = document.getElementById(`${type}-grid-${id}`);
         let phClass = type === 'm' ? 'lang-installTk' : 'lang-installVw';
@@ -463,14 +566,12 @@
         `;
         grid.appendChild(newField);
         
-        // Sync disable state with current card state
         let isCardLocked = document.getElementById(`name-${id}`).disabled;
         newField.querySelectorAll('.lockable').forEach(el => el.disabled = isCardLocked);
 
         if(val === '') autoSave(id);
     }
 
-    // Add & Delete Slot (With Password)
     function addNewSlot() {
         let arr = getActiveArray();
         let newId = generateId();
@@ -500,7 +601,6 @@
         }
     }
 
-    // Calculations
     function calcMoney(id) {
         let total = parseFloat(document.getElementById(`t-money-${id}`).value) || 0;
         let adv = parseFloat(document.getElementById(`a-money-${id}`).value) || 0;
@@ -537,7 +637,6 @@
         document.getElementById('grandRemainingViews').innerText = grandDueViews;
     }
 
-    // Countdown Timer Setup
     function setupTimer(id) {
         let dateInput = document.getElementById(`date-${id}`).value;
         let display = document.getElementById(`timer-${id}`);
@@ -573,7 +672,6 @@
         }, 1000);
     }
 
-    // Save & Load
     function autoSave(id) {
         localStorage.setItem(`slot_${id}_link`, document.getElementById(`link-${id}`).value);
         localStorage.setItem(`slot_${id}_name`, document.getElementById(`name-${id}`).value);
@@ -592,7 +690,7 @@
 
     function manualSave(id) { 
         autoSave(id); 
-        lockSlotInputs(id, true); // Auto-lock after saving
+        lockSlotInputs(id, true); 
         alert(`ডাটা সেভ এবং লক করা হয়েছে!`); 
     }
 
@@ -602,12 +700,12 @@
         if(cover) { 
             document.getElementById(`cover-img-${id}`).src = cover; 
             document.getElementById(`cover-img-${id}`).style.display = 'block'; 
-            document.getElementById(`cover-hint-${id}`).style.display = 'none'; // Hide text
+            document.getElementById(`cover-hint-${id}`).style.display = 'none';
         }
         if(profile) { 
             document.getElementById(`profile-img-${id}`).src = profile; 
             document.getElementById(`profile-img-${id}`).style.display = 'block'; 
-            document.getElementById(`profile-hint-${id}`).style.display = 'none'; // Hide text
+            document.getElementById(`profile-hint-${id}`).style.display = 'none';
         }
 
         document.getElementById(`link-${id}`).value = localStorage.getItem(`slot_${id}_link`) || '';
@@ -643,7 +741,6 @@
             let keys = ['cover','profile','link','name','wa','date','tm','am','tv','status','mArr','vArr'];
             keys.forEach(k => localStorage.removeItem(`slot_${id}_${k}`));
             
-            // Reset image visibility
             document.getElementById(`cover-img-${id}`).style.display = 'none';
             document.getElementById(`cover-hint-${id}`).style.display = 'flex';
             document.getElementById(`profile-img-${id}`).style.display = 'none';
@@ -654,7 +751,6 @@
         }
     }
 
-    // Status List Logic
     function toggleStatus(id) {
         let badge = document.getElementById(`status-${id}`);
         let isBooked = badge.classList.contains('booked');
@@ -693,7 +789,6 @@
         }
     }
 
-    // Image Upload Handler
     function handleImg(e, type, id) {
         let file = e.target.files[0];
         if(!file) return;
@@ -711,7 +806,7 @@
                 
                 document.getElementById(`${type}-img-${id}`).src = b64;
                 document.getElementById(`${type}-img-${id}`).style.display = 'block';
-                document.getElementById(`${type}-hint-${id}`).style.display = 'none'; // Hide text
+                document.getElementById(`${type}-hint-${id}`).style.display = 'none';
 
                 localStorage.setItem(`slot_${id}_${type}`, b64);
             }
